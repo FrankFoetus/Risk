@@ -1,0 +1,5 @@
+﻿  SpriteBatch.cpp
+c:\users\frankfoetus\documents\visual studio 2015\projects\bengine\spritebatch.cpp(34): warning C4018: '<': signed/unsigned mismatch
+c:\users\frankfoetus\documents\visual studio 2015\projects\bengine\spritebatch.cpp(50): warning C4018: '<': signed/unsigned mismatch
+c:\users\frankfoetus\documents\visual studio 2015\projects\bengine\spritebatch.cpp(82): warning C4018: '<': signed/unsigned mismatch
+  Bengine.vcxproj -> C:\Users\FrankFoetus\documents\visual studio 2015\Projects\FirstGame\Debug\Bengine.lib
