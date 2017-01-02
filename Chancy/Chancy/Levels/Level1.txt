@@ -1,8 +1,12 @@
-RR......RRRRR
-RRR..R....RRR
-....RRR...RRR
-R...RRRRR...R
-RRRRR...RR...
-RRR.........R
-R.........RRR
+RR......RRRRRRRR......RRR....RR
+RRR..R....RRRRR....R...RRR....R
+....RRR...RRRR........RR......R
+R...RRRRR...R....RR...RRR....RR
+RRRRR...RR.......RR....R....RRR
+RRR.........RR.............RRRR
+R.........RRRRR..........RRRRRR
+....RRR.....RRR.....RR.....RRRR
+..RRR......RR......RRR...RRR...
+...RRRRR....RRRR...RRR.........
+......RR.....RR.....RRR........
 
