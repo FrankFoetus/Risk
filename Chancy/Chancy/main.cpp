@@ -1,11 +1,10 @@
-#include <Bengine.h>
+#pragma once
 
 #include "MainGame.h"
 
-int main(int* argc, char** argv) {
+int main(int argc, char** argv) {
 
 	MainGame Chancy;
-
 	Chancy.run();
 
 	return 0;
