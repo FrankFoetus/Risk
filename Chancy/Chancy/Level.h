@@ -13,7 +13,7 @@ class Level
 {
 public:
 	// load the level
-	Level(const std::string fileName);
+	Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidth_);
 	~Level();
 
 	void draw();

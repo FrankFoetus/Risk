@@ -5,7 +5,7 @@
 #include <fstream>
 
 
-Level::Level(const std::string fileName) {
+Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidth_) {
 	// open the file
 	std::ifstream file;
 	file.open(fileName);
@@ -34,7 +34,7 @@ Level::Level(const std::string fileName) {
 			char tile = levelData_[y][x];
 
 			// get dest rect
-			glm::vec4 destRect(x*TILE_WIDTH, y*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
+			glm::vec4 destRect(-double(windowWidth_/2)+x*TILE_WIDTH, -double(windowHeight_/2)+y*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
 
 			// process the tile
 			switch (tile) {

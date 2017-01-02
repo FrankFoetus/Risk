@@ -56,7 +56,7 @@ void MainGame::initShaders() {
 
 void MainGame::initLevel() {
 
-	levels_.push_back(new Level("Levels/Level1.txt"));
+	levels_.push_back(new Level("Levels/Level1.txt", windowHeight_, windowWidth_));
 	currentLevel_ = 0;
 
 	// TODO: add territories etc.
@@ -172,21 +172,28 @@ void MainGame::processInput() {
 		camera2D_.setPosition(glm::vec2(0.0, 0.0));
 	}
 	if (inputManager_.isKeyDown(SDLK_w)) {
-		// update camera position
-		std::cout << "Moving up!" << std::endl;
-		camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(0.0, cameraSpeed_ /* * deltaTime*/));
+		if (camera2D_.getPosition().y < windowHeight_/2) {
+			// update camera position
+			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(0.0, cameraSpeed_ /* * deltaTime */));
+		}
 	}
 	if (inputManager_.isKeyDown(SDLK_s)) {
-		// update camera position
-		camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(0.0, -cameraSpeed_ /* * deltaTime*/));
+		if (camera2D_.getPosition().y > 0) {
+			// update camera position
+			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(0.0, -cameraSpeed_ /* * deltaTime */));
+		}
 	}
 	if (inputManager_.isKeyDown(SDLK_a)) {
-		// update camera position
-		camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(-cameraSpeed_ /* * deltaTime*/, 0.0));
+		if (camera2D_.getPosition().x > 0) {
+			// update camera position
+			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(-cameraSpeed_ /* * deltaTime */, 0.0));
+		}
 	}
 	if (inputManager_.isKeyDown(SDLK_d)) {
-		// update camera position
-		camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(cameraSpeed_ /* * deltaTime*/, 0.0));
+		if (camera2D_.getPosition().x < windowWidth_ / 2) {
+			// update camera position
+			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(cameraSpeed_ /* * deltaTime*/, 0.0));
+		}
 	}
 }
 

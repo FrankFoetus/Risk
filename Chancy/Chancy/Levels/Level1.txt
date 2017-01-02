@@ -1,6 +1,8 @@
-RRRRR
-R...R
-R...R
-R...R
-RRRRR
+RR......RRRRR
+RRR..R....RRR
+....RRR...RRR
+R...RRRRR...R
+RRRRR...RR...
+RRR.........R
+R.........RRR
 
