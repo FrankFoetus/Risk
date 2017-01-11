@@ -9,6 +9,7 @@
 #include <Bengine\GLSLProgram.h>
 #include <Bengine\Timing.h>
 #include <Bengine\RessourceManager.h>
+#include <Bengine\SpriteFont.h>
 
 #include <iostream>
 #include <GL\glew.h>
@@ -34,6 +35,7 @@ private:
 
 	void processInput();
 	void drawGame();
+	void drawHud();
 	void checkVictory();
 
 	void printFPS(int interval);
@@ -44,8 +46,15 @@ private:
 	Bengine::Window window_;
 	Bengine::InputManager inputManager_;
 	Bengine::GLSLProgram colorProgram_;
+
 	Bengine::Camera2D camera2D_;
+	Bengine::Camera2D hudCamera2D_;
+
 	Bengine::FpsLimiter fpsLimiter_;
+
+	Bengine::SpriteFont* spriteFont_;
+
+	Bengine::SpriteBatch hudSpritebatch_;
 
 	GLuint windowWidth_;
 	GLuint windowHeight_;

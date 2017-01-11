@@ -14,7 +14,6 @@ MainGame::MainGame() :
 	framePrintCounter_(0),
 	cameraSpeed_(5)
 {
-	camera2D_.init(windowWidth_, windowHeight_);
 }
 
 
@@ -42,6 +41,15 @@ void MainGame::initSys() {
 	initShaders();
 
 	fpsLimiter_.init(maxFPS_);
+
+	camera2D_.init(windowWidth_, windowHeight_);
+	hudCamera2D_.init(windowWidth_, windowHeight_);
+	hudCamera2D_.setPosition(glm::vec2(windowWidth_ / 2 ,windowHeight_ / 2));
+
+	hudSpritebatch_.init();
+
+	// initialize the spriteFont
+	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 64);
 }
 
 
@@ -104,11 +112,12 @@ void MainGame::gameLoop() {
 		// camera2D_.setPosition();
 
 		camera2D_.update();
+		hudCamera2D_.update();
 
 		drawGame();
 
 		fps_ = fpsLimiter_.end();
-		printFPS(100);
+		//printFPS(100);
 	}
 }
 
@@ -150,7 +159,7 @@ void MainGame::processInput() {
 			break;
 		case SDL_MOUSEMOTION:
 			inputManager_.setMouseCoords(evt.motion.x, evt.motion.y);
-			std::cout << evt.motion.x << " " << evt.motion.y << std::endl;
+			//std::cout << evt.motion.x << " " << evt.motion.y << std::endl;
 			break;
 		default:
 			break;
@@ -233,6 +242,9 @@ void MainGame::drawGame() {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// draw the hud
+	drawHud();
+
 	// disable the shader
 	colorProgram_.unuse();
 
@@ -240,6 +252,24 @@ void MainGame::drawGame() {
 	window_.swapBuffer();
 }
 
+void MainGame::drawHud() {
+	// set the camera matrix
+	glm::mat4 cameraMatrix = hudCamera2D_.getCameraMatrix();
+	GLint pLocation = colorProgram_.getUniformLocation("P");
+	// upload matrix to the gpu
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+	char buffer[256];
+
+	hudSpritebatch_.begin();
+
+	sprintf_s(buffer, "CHANCY");
+	spriteFont_->draw(hudSpritebatch_, buffer, glm::vec2(100,100), 
+						glm::vec2(1.0), 0.0f, Bengine::ColorRGBA8(255,255,255,255));
+
+	hudSpritebatch_.end();
+	hudSpritebatch_.renderBatch();
+}
 
 void MainGame::printFPS(int interval) {
 	if (framePrintCounter_ == interval) {
