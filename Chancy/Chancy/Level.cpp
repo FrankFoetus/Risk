@@ -1,4 +1,5 @@
 #include "Level.h"
+#include "Territory.h"
 
 #include <Bengine/Error.h>
 
@@ -15,15 +16,20 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 		Bengine::fatalError("Failed to open " + fileName);
 	}
 
-	// tmp
+	// create the continents
+	continents_.push_back(new Continent("Temeria"));
+	continents_.push_back(new Continent("Scellige"));
+	continents_.push_back(new Continent("Nilfgard"));
+	continents_.push_back(new Continent("Kaer Morhen"));
+	continents_.push_back(new Continent("Velen"));
+	continents_.push_back(new Continent("Vizima"));
+
+	// tmporal variable to load data from text file
 	std::string tmp;
 
 	while (std::getline(file, tmp)) {
 		levelData_.push_back(tmp);
 	}
-
-	spriteBatch_.init();
-	spriteBatch_.begin();
 
 	glm::vec4 uvRect(0.0f, 0.0f, 1.0f, 1.0f);
 
@@ -36,28 +42,69 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 			// get dest rect
 			glm::vec4 destRect(-double(windowWidth_/2)+x*TILE_WIDTH, -double(windowHeight_/2)+y*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
 
+			std::string territoryName = territoryNames_[1];
+			int ind = 0;
+			while (territoryName != territoryNames_[ind]) { 
+				if (ind >= territoryNames_.size())
+					Bengine::fatalError("Ran out of territory names!");
+				ind++;
+			}
+
 			// process the tile
 			switch (tile) {
 			case 'R':
-				spriteBatch_.draw(destRect,
-					uvRect,
-					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_OrangeDark.png").id,
-					0,
-					Bengine::ColorRGBA8(255, 255, 255, 255));
+				territory_ = new Territory(territoryName, destRect, uvRect,
+					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
+					Bengine::ColorRGBA8(255, 0, 0, 255));
+				// place the new territory into all territories vector
+				territories_.push_back(territory_);
+				// place the new territory into continents_[0] vector
+				continents_[0]->getTerritories().push_back(territory_);
 				break;
 			case 'G':
-				spriteBatch_.draw(destRect,
-					uvRect,
-					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_Blue.png").id,
-					0,
-					Bengine::ColorRGBA8(255, 255, 255, 255));
-				break;
-			case 'L':
-				spriteBatch_.draw(destRect,
-					uvRect,
+				territory_ = new Territory(territoryName, destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
-					0,
-					Bengine::ColorRGBA8(255, 255, 255, 255));
+					Bengine::ColorRGBA8(0, 255, 0, 255));
+				// place the new territory into all territories vector
+				territories_.push_back(territory_);
+				// place the new territory into continents_[1] vector
+				continents_[1]->getTerritories().push_back(territory_);
+				break;
+			case 'B':
+				territory_ = new Territory(territoryName, destRect, uvRect,
+					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
+					Bengine::ColorRGBA8(0, 0, 255, 255));
+				// place the new territory into all territories vector
+				territories_.push_back(territory_);
+				// place the new territory into continents_[2] vector
+				continents_[2]->getTerritories().push_back(territory_);
+				break;
+			case 'Y':
+				territory_ = new Territory(territoryName, destRect, uvRect,
+					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
+					Bengine::ColorRGBA8(0, 255, 255, 255));
+				// place the new territory into all territories vector
+				territories_.push_back(territory_);
+				// place the new territory into continents_[3] vector
+				continents_[3]->getTerritories().push_back(territory_);
+				break;
+			case 'M':
+				territory_ = new Territory(territoryName, destRect, uvRect,
+					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
+					Bengine::ColorRGBA8(255, 0, 255, 255));
+				// place the new territory into all territories vector
+				territories_.push_back(territory_);
+				// place the new territory into continents_[4] vector
+				continents_[4]->getTerritories().push_back(territory_);
+				break;
+			case 'C':
+				territory_ = new Territory(territoryName, destRect, uvRect,
+					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
+					Bengine::ColorRGBA8(255, 255, 0, 255));
+				// place the new territory into all territories vector
+				territories_.push_back(territory_);
+				// place the new territory into continents_[5] vector
+				continents_[5]->getTerritories().push_back(territory_);
 				break;
 			case '.':
 				break;
@@ -67,17 +114,15 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 			}
 		}
 	}
-
-	spriteBatch_.end();
 }
 
 
 Level::~Level()
 {
-	// empty deconstructor
-}
-
-
-void Level::draw() {
-	spriteBatch_.renderBatch();
+	for (int i = 0; i < continents_.size(); i++) {
+		delete continents_[i];
+	}
+	for (int i = 0; i < territories_.size(); i++) {
+		delete territories_[i];
+	}
 }

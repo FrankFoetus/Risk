@@ -3,7 +3,6 @@
 #include "SpriteBatch.h"
 
 #include <SDL/SDL.h>
-#include <iostream>
 
 
 int closestPow2(int i) {
@@ -20,15 +19,7 @@ int closestPow2(int i) {
 
 namespace Bengine {
 
-	SpriteFont::SpriteFont(const char* font, int size, char cs, char ce) {
-		init(font, size, cs, ce);
-	}
-
-	void SpriteFont::init(const char* font, int size) {
-		init(font, size, FIRST_PRINTABLE_CHAR, LAST_PRINTABLE_CHAR);
-	}
-
-	void SpriteFont::init(const char* font, int size, char cs, char ce) {
+	SpriteFont::SpriteFont (const char* font, int size, char cs, char ce) {
 		// Initialize SDL_ttf
 		if (!TTF_WasInit()) {
 			TTF_Init();
@@ -44,7 +35,6 @@ namespace Bengine {
 		_regLength = ce - cs + 1;
 		int padding = size / 8;
 
-		std::cout << _regStart << " " << _regLength << std::endl;
 		// First neasure all the regions
 		glm::ivec4* glyphRects = new glm::ivec4[_regLength];
 		int i = 0, advance;
@@ -97,6 +87,7 @@ namespace Bengine {
 			fflush(stderr);
 			throw 282;
 		}
+
 		// Create the texture
 		glGenTextures(1, &_texID);
 		glBindTexture(GL_TEXTURE_2D, _texID);
@@ -155,7 +146,6 @@ namespace Bengine {
 		_glyphs = new CharGlyph[_regLength + 1];
 		for (i = 0; i < _regLength; i++) {
 			_glyphs[i].character = (char)(cs + i);
-			std::cout << _glyphs[i].character << std::endl;
 			_glyphs[i].size = glm::vec2(glyphRects[i].z, glyphRects[i].w);
 			_glyphs[i].uvRect = glm::vec4(
 				(float)glyphRects[i].x / (float)bestWidth,

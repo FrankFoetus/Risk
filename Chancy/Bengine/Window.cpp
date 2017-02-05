@@ -48,7 +48,7 @@ namespace Bengine {
 			fatalError("Could not initiliaze glew!");
 		}
 
-		glClearColor(1.0f, 0.8f, 0.7f, 1.0f);
+		glClearColor(72.0f/255.0f, 118.0f/255.0f, 255.0f/255.0f, 1.0f);
 
 		// Check open GL version
 		std::printf("*** Open GL Version: %s ***\n", glGetString(GL_VERSION));

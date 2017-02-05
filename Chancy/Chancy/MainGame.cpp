@@ -47,9 +47,10 @@ void MainGame::initSys() {
 	hudCamera2D_.setPosition(glm::vec2(windowWidth_ / 2 ,windowHeight_ / 2));
 
 	hudSpritebatch_.init();
+	territoryBatch_.init();
 
 	// initialize the spriteFont
-	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 64);
+	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 32);
 }
 
 
@@ -67,7 +68,7 @@ void MainGame::initLevel() {
 	levels_.push_back(new Level("Levels/Level1.txt", windowHeight_, windowWidth_));
 	currentLevel_ = 0;
 
-	// TODO: add territories etc.
+	territories_ = levels_[currentLevel_]->getTerritories();
 }
 
 
@@ -109,8 +110,6 @@ void MainGame::gameLoop() {
 			i++;
 		}
 
-		// camera2D_.setPosition();
-
 		camera2D_.update();
 		hudCamera2D_.update();
 
@@ -125,16 +124,18 @@ void MainGame::gameLoop() {
 void MainGame::checkVictory() {
 	// TODO: Support for multiple levels!
 	// if x, player a wins
-	/* if () {
-	*	std::printf("*** !!!PLAYER %d WINS!!! ***\n", player);
-	*	Bengine::fatalError("");
+	/*
+	* for (int indPlayer = 0; indPlayer < players_.size(); indPlayer++){
+	*	if (players_[indPlayer].hasWon) {
+	*		std::printf("*** !!!PLAYER %d WINS!!! ***\n", players_[indPLayer].getName());
+	*	}
 	*}
 	*/
 }
 
 
 void MainGame::processInput() {
-	const float SCALE_SPEED = 0.1f;
+	const float SCALE_SPEED = 0.025f;
 
 	SDL_Event evt;
 
@@ -168,12 +169,12 @@ void MainGame::processInput() {
 
 	if (inputManager_.isKeyDown(SDLK_q)) {
 		if (camera2D_.getScale() > 0.5) {
-			camera2D_.setScale(camera2D_.getScale() + -SCALE_SPEED);
+			camera2D_.setScale(camera2D_.getScale() + -SCALE_SPEED*camera2D_.getScale());
 		}
 	}
 	if (inputManager_.isKeyDown(SDLK_e)) {
 		if (camera2D_.getScale() < 2) {
-			camera2D_.setScale(camera2D_.getScale() + SCALE_SPEED);
+			camera2D_.setScale(camera2D_.getScale() + SCALE_SPEED*camera2D_.getScale());
 		}
 	}
 	if (inputManager_.isKeyDown(SDLK_r)) {
@@ -181,27 +182,35 @@ void MainGame::processInput() {
 		camera2D_.setPosition(glm::vec2(0.0, 0.0));
 	}
 	if (inputManager_.isKeyDown(SDLK_w)) {
-		if (camera2D_.getPosition().y < windowHeight_/2) {
+		if (camera2D_.getPosition().y < windowHeight_/2) {  // TODO: scale the borders for camera movement with camera zoom
 			// update camera position
 			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(0.0, cameraSpeed_ /* * deltaTime */));
 		}
 	}
 	if (inputManager_.isKeyDown(SDLK_s)) {
-		if (camera2D_.getPosition().y > 0) {
+		if (camera2D_.getPosition().y > 0) { // TODO: scale the borders for camera movement with camera zoom
 			// update camera position
 			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(0.0, -cameraSpeed_ /* * deltaTime */));
 		}
 	}
 	if (inputManager_.isKeyDown(SDLK_a)) {
-		if (camera2D_.getPosition().x > 0) {
+		if (camera2D_.getPosition().x > 0) { // TODO: scale the borders for camera movement with camera zoom
 			// update camera position
 			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(-cameraSpeed_ /* * deltaTime */, 0.0));
 		}
 	}
 	if (inputManager_.isKeyDown(SDLK_d)) {
-		if (camera2D_.getPosition().x < windowWidth_ / 2) {
+		if (camera2D_.getPosition().x < windowWidth_ / 2) { // TODO: scale the borders for camera movement with camera zoom
 			// update camera position
 			camera2D_.setPosition(camera2D_.getPosition() + glm::vec2(cameraSpeed_ /* * deltaTime*/, 0.0));
+		}
+	}
+
+	if (inputManager_.isKeyPressed(SDL_BUTTON_LEFT)) {
+		Territory* territory = checkDistanceToTerritory(camera2D_.convertScreenToWorld(inputManager_.getMouseCoords()));
+		if (territory != NULL) {
+			std::cout << "IT IS COMPLETE!!!" << std::endl;
+			territory->setColor(Bengine::ColorRGBA8(0,0,0,255));
 		}
 	}
 }
@@ -237,8 +246,17 @@ void MainGame::drawGame() {
 	// upload matrix to the gpu
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
-	// draw level
-	levels_[currentLevel_]->draw();
+	// draw the territories
+	territoryBatch_.begin();
+
+	for (int i = 0; i < territories_.size(); i++) {
+		// draw all territories to the sprite batch
+		territoryBatch_.draw(territories_[i]->getPosition(), territories_[i]->getUV(), territories_[i]->getTextureID(), 0, territories_[i]->getColor());
+	}
+
+	territoryBatch_.end();
+	// render the territories
+	territoryBatch_.renderBatch();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -263,13 +281,28 @@ void MainGame::drawHud() {
 
 	hudSpritebatch_.begin();
 
-	sprintf_s(buffer, "CHANCY");
+	sprintf_s(buffer, "abcdefgh");
 	spriteFont_->draw(hudSpritebatch_, buffer, glm::vec2(100,100), 
-						glm::vec2(1.0), 0.0f, Bengine::ColorRGBA8(255,255,255,255));
+						glm::vec2(4.0), 0.0f, Bengine::ColorRGBA8(255,255,255,255));
 
 	hudSpritebatch_.end();
 	hudSpritebatch_.renderBatch();
 }
+
+
+Territory* MainGame::checkDistanceToTerritory(glm::vec2 mousePos) {
+	for (auto it : levels_[currentLevel_]->getTerritories()) {
+		glm::vec4 territoryPos = it->getPosition();
+		std::cout << territoryPos.x << " " << territoryPos.y << std::endl;
+		std::cout << mousePos.x << " " << mousePos.y << std::endl;
+		if (mousePos.x < territoryPos.x + territoryPos.z && mousePos.x > territoryPos.x && mousePos.y > territoryPos.y && mousePos.y < territoryPos.y + territoryPos.w) {
+			return it;
+		}
+	}
+	std::cout << "========================" << std::endl;
+	return nullptr;
+}
+
 
 void MainGame::printFPS(int interval) {
 	if (framePrintCounter_ == interval) {

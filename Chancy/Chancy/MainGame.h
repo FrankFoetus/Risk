@@ -16,6 +16,7 @@
 #include <SDL\SDL.h>
 
 #include "Level.h"
+#include "Territory.h"
 
 enum class GameState { PLAY, EXIT };
 
@@ -37,10 +38,12 @@ private:
 	void drawGame();
 	void drawHud();
 	void checkVictory();
+	Territory* checkDistanceToTerritory(glm::vec2 mousePos);
 
 	void printFPS(int interval);
 
 	std::vector<Level*> levels_; /// vector of levels
+	std::vector<Territory*> territories_; /// vector of territories
 	int currentLevel_;
 
 	Bengine::Window window_;
@@ -55,6 +58,7 @@ private:
 	Bengine::SpriteFont* spriteFont_;
 
 	Bengine::SpriteBatch hudSpritebatch_;
+	Bengine::SpriteBatch territoryBatch_;
 
 	GLuint windowWidth_;
 	GLuint windowHeight_;

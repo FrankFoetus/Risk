@@ -47,27 +47,16 @@ namespace Bengine {
 #define LAST_PRINTABLE_CHAR ((char)126)
 
 	/// For text justification
-	enum class Justification {
-		LEFT, MIDDLE, RIGHT
-	};
+	enum class Justification { LEFT, MIDDLE, RIGHT };
 
 	class SpriteFont {
 	public:
-		SpriteFont() {};
-		SpriteFont(const char* font, int size, char cs, char ce);
-		SpriteFont(const char* font, int size) :
-			SpriteFont(font, size, FIRST_PRINTABLE_CHAR, LAST_PRINTABLE_CHAR) {
-		}
-
-		void init(const char* font, int size);
-		void init(const char* font, int size, char cs, char ce);
+		SpriteFont(const char* font, int size, char cs = FIRST_PRINTABLE_CHAR, char ce = LAST_PRINTABLE_CHAR);
 
 		/// Destroys the font resources
 		void dispose();
 
-		int getFontHeight() const {
-			return _fontHeight;
-		}
+		int getFontHeight() const { return _fontHeight; }
 
 		/// Measures the dimensions of the text
 		glm::vec2 measure(const char* s);
