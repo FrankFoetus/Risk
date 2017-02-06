@@ -93,7 +93,14 @@ void MainGame::gameLoop() {
 		previousTicks = newTicks;
 		float totalDeltaTime = frameTime / DESIRED_FRAMTIME;
 
-		checkVictory();
+		switch (gameState_) 
+		{
+		case GameState::PLAY:
+			checkVictory();
+			break;
+		default:
+			break;
+		}
 
 		inputManager_.update();
 
@@ -106,7 +113,6 @@ void MainGame::gameLoop() {
 			// TODO: updateTerritories()
 
 			totalDeltaTime -= deltaTime;
-
 			i++;
 		}
 
@@ -206,11 +212,17 @@ void MainGame::processInput() {
 		}
 	}
 
+	// process left mouse click
 	if (inputManager_.isKeyPressed(SDL_BUTTON_LEFT)) {
 		Territory* territory = checkDistanceToTerritory(camera2D_.convertScreenToWorld(inputManager_.getMouseCoords()));
 		if (territory != NULL) {
-			std::cout << "IT IS COMPLETE!!!" << std::endl;
-			territory->setColor(Bengine::ColorRGBA8(0,0,0,255));
+			// turn territory black for testing purposes
+			if (territory->getColor().a < 255) {
+				territory->setColor(Bengine::ColorRGBA8(territory->getColor().r, territory->getColor().g, territory->getColor().b, 255));
+			}
+			else {
+				territory->setColor(Bengine::ColorRGBA8(territory->getColor().r, territory->getColor().g, territory->getColor().b, 150));
+			}
 		}
 	}
 }
@@ -261,7 +273,7 @@ void MainGame::drawGame() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// draw the hud
-	drawHud();
+	//drawHud();
 
 	// disable the shader
 	colorProgram_.unuse();
@@ -293,13 +305,14 @@ void MainGame::drawHud() {
 Territory* MainGame::checkDistanceToTerritory(glm::vec2 mousePos) {
 	for (auto it : levels_[currentLevel_]->getTerritories()) {
 		glm::vec4 territoryPos = it->getPosition();
+		/*
 		std::cout << territoryPos.x << " " << territoryPos.y << std::endl;
 		std::cout << mousePos.x << " " << mousePos.y << std::endl;
+		*/
 		if (mousePos.x < territoryPos.x + territoryPos.z && mousePos.x > territoryPos.x && mousePos.y > territoryPos.y && mousePos.y < territoryPos.y + territoryPos.w) {
 			return it;
 		}
 	}
-	std::cout << "========================" << std::endl;
 	return nullptr;
 }
 

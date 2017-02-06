@@ -6,6 +6,5 @@ public:
 	~Unit();
 
 private:
-	int type_ = 1;
 };
 

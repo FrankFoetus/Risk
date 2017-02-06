@@ -14,8 +14,6 @@ public:
 	Territory(std::string name, glm::vec4 position, glm::vec4 uv, GLuint textureID, Bengine::ColorRGBA8 color);
 	~Territory();
 
-	void init();
-
 	glm::vec4 getPosition() { return position_; }
 	glm::vec4 getUV() { return uv_; }
 	Bengine::ColorRGBA8 getColor() { return color_; }

@@ -11,8 +11,3 @@ Territory::Territory(std::string name, glm::vec4 position, glm::vec4 uv, GLuint 
 Territory::~Territory()
 {
 }
-
-
-void Territory::init() {
-
-}
