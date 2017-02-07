@@ -59,6 +59,8 @@ private:
 
 	Bengine::SpriteBatch hudSpritebatch_;
 	Bengine::SpriteBatch territoryBatch_;
+	Bengine::SpriteBatch unitsT1Batch_;
+	Bengine::SpriteBatch unitsT2Batch_;
 
 	GLuint windowWidth_;
 	GLuint windowHeight_;

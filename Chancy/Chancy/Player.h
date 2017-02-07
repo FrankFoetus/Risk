@@ -5,6 +5,8 @@
 
 #include "Territory.h"
 
+class Territory;
+
 class Player
 {
 public:

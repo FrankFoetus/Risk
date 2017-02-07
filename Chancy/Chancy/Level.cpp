@@ -43,7 +43,7 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 			glm::vec4 destRect(-double(windowWidth_/2)+x*TILE_WIDTH, -double(windowHeight_/2)+y*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
 
 			std::string territoryName = territoryNames_[1];
-			int ind = 0;
+			unsigned int ind = 0;
 			while (territoryName != territoryNames_[ind]) { 
 				if (ind >= territoryNames_.size())
 					Bengine::fatalError("Ran out of territory names!");
@@ -119,10 +119,10 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 
 Level::~Level()
 {
-	for (int i = 0; i < continents_.size(); i++) {
+	for (unsigned int i = 0; i < continents_.size(); i++) {
 		delete continents_[i];
 	}
-	for (int i = 0; i < territories_.size(); i++) {
+	for (unsigned int i = 0; i < territories_.size(); i++) {
 		delete territories_[i];
 	}
 }

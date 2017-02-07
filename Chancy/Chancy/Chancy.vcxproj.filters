@@ -39,6 +39,12 @@
     <ClInclude Include="Unit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UnitsT1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnitT2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chancy.rc">
@@ -68,6 +74,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Unit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitsT1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitT2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

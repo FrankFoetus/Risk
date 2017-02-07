@@ -126,6 +126,8 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="Territory.h" />
     <ClInclude Include="Unit.h" />
+    <ClInclude Include="UnitsT1.h" />
+    <ClInclude Include="UnitT2.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Chancy.rc" />
@@ -139,6 +141,8 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Territory.cpp" />
     <ClCompile Include="Unit.cpp" />
+    <ClCompile Include="UnitsT1.cpp" />
+    <ClCompile Include="UnitT2.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
