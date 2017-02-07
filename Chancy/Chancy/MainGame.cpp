@@ -50,6 +50,7 @@ void MainGame::initSys() {
 	territoryBatch_.init();
 	unitsT1Batch_.init();
 	unitsT2Batch_.init();
+	unitsT3Batch_.init();
 
 	// initialize the spriteFont
 	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 32);
@@ -225,10 +226,22 @@ void MainGame::processInput() {
 				for (auto it : territory->getUnitsT1()) {
 					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
 				}
+				for (auto it : territory->getUnitsT2()) {
+					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+				}
+				for (auto it : territory->getUnitsT3()) {
+					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+				}
 			}
 			else {
 				territory->setColor(Bengine::ColorRGBA8(territory->getColor().r, territory->getColor().g, territory->getColor().b, 150));
 				for (auto it : territory->getUnitsT1()) {
+					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+				}
+				for (auto it : territory->getUnitsT2()) {
+					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+				}
+				for (auto it : territory->getUnitsT3()) {
 					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
 				}
 			}
@@ -239,22 +252,37 @@ void MainGame::processInput() {
 		// check if territory was hit by click
 		Territory* territory = checkDistanceToTerritory(camera2D_.convertScreenToWorld(inputManager_.getMouseCoords()));
 		if (territory != NULL) {
-			std::vector<Unit*> unitsT1 = territory->getUnitsT1();
-			std::vector<Unit*> unitsT2 = territory->getUnitsT2();
+			std::vector<UnitT1*> unitsT1 = territory->getUnitsT1();
+			std::vector<UnitT2*> unitsT2 = territory->getUnitsT2();
+			std::vector<UnitT3*> unitsT3 = territory->getUnitsT3();
 			if (unitsT1.size() == 5) {
-				unitsT2.emplace_back(new Unit(glm::vec4(territory->getPosition().x + territory->getUnitsT2().size() * territory->getPosition().z / 5,
-						territory->getPosition().y + territory->getPosition().w / 3, territory->getPosition().z / 5, territory->getPosition().w / 3),
-					territory->getUV(),
-					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Broccoli1.png").id,
-					Bengine::ColorRGBA8(255, 255, 255, 150)));
-				// delete 5 T1 units 
-				for (unsigned int i = 0; i < 5; i++) {
-					delete unitsT1[i];
+				if (unitsT2.size() == 5) {
+					unitsT3.emplace_back(new UnitT3(glm::vec4(territory->getPosition().x + territory->getUnitsT3().size() * territory->getPosition().z / 5,
+						territory->getPosition().y + territory->getPosition().w * 2 / 3, territory->getPosition().z / 5, territory->getPosition().w / 3),
+						territory->getUV(),
+						Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Candy1.png").id,
+						Bengine::ColorRGBA8(255, 255, 255, 150)));
+					// delete 5 T1 units 
+					for (unsigned int i = 0; i < 5; i++) {
+						delete unitsT2[i];
+					}
+					unitsT2.erase(unitsT2.begin(), unitsT2.end());
 				}
-				unitsT1.erase(unitsT1.begin(), unitsT1.end());
+				else {
+					unitsT2.emplace_back(new UnitT2(glm::vec4(territory->getPosition().x + territory->getUnitsT2().size() * territory->getPosition().z / 5,
+						territory->getPosition().y + territory->getPosition().w / 3, territory->getPosition().z / 5, territory->getPosition().w / 3),
+						territory->getUV(),
+						Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Broccoli1.png").id,
+						Bengine::ColorRGBA8(255, 255, 255, 150)));
+					// delete 5 T1 units 
+					for (unsigned int i = 0; i < 5; i++) {
+						delete unitsT1[i];
+					}
+					unitsT1.erase(unitsT1.begin(), unitsT1.end());
+				}
 			}
 			else {
-				unitsT1.emplace_back(new Unit(glm::vec4(territory->getPosition().x + territory->getUnitsT1().size() * territory->getPosition().z / 5,
+				unitsT1.emplace_back(new UnitT1(glm::vec4(territory->getPosition().x + territory->getUnitsT1().size() * territory->getPosition().z / 5,
 						territory->getPosition().y, territory->getPosition().z / 5, territory->getPosition().w / 3),
 					territory->getUV(),
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Mushroom1.png").id,
@@ -262,6 +290,7 @@ void MainGame::processInput() {
 			}
 			territory->setUnitsT1(unitsT1);
 			territory->setUnitsT2(unitsT2);
+			territory->setUnitsT3(unitsT3);
 		}
 	}
 }
@@ -302,19 +331,22 @@ void MainGame::drawGame() {
 	// sprite batch for units
 	unitsT1Batch_.begin();
 	unitsT2Batch_.begin();
+	unitsT3Batch_.begin();
 
 	for (auto it : territories_) {
 		// draw all territories to the sprite batch
-		it->draw(&territoryBatch_, &unitsT1Batch_, &unitsT2Batch_);
+		it->draw(&territoryBatch_, &unitsT1Batch_, &unitsT2Batch_, &unitsT3Batch_);
 	}
 
 	territoryBatch_.end();
 	unitsT1Batch_.end();
 	unitsT2Batch_.end();
+	unitsT3Batch_.end();
 	// render the territories
 	territoryBatch_.renderBatch();
 	unitsT1Batch_.renderBatch();
 	unitsT2Batch_.renderBatch();
+	unitsT3Batch_.renderBatch();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

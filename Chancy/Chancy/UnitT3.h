@@ -2,7 +2,7 @@
 
 #include "Unit.h"
 
-class UnitT2 : public Unit
+class UnitT3 : public Unit
 {
 	using Unit::Unit;
 public:

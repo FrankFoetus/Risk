@@ -2,8 +2,9 @@
 
 #include "Unit.h"
 
-class UnitsT1 : public Unit
+class UnitT1 : public Unit
 {
+	using Unit::Unit;
 public:
 };
 
