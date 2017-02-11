@@ -2,8 +2,9 @@
 
 
 
-Unit::Unit(glm::vec4 position, glm::vec4 uv, int textureID, Bengine::ColorRGBA8 color) :
-	position_(position), uv_(uv), textureID_(textureID), color_(color)
+Unit::Unit(glm::vec4 position, glm::vec4 uv, int textureID, 
+	Bengine::ColorRGBA8 color, Bengine::SoundEffect spawnSoundEffect) :
+	position_(position), uv_(uv), textureID_(textureID), color_(color), spawnSoundEffect_(spawnSoundEffect)
 {
 }
 

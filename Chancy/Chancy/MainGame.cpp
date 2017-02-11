@@ -1,19 +1,14 @@
 
 #include <algorithm>
 
-#include <Bengine\Error.h>
+#include <Bengine\BengineError.h>
 
 #include "MainGame.h"
 
 
-MainGame::MainGame() :
-	gameState_(GameState::PLAY),
-	windowWidth_(1600),
-	windowHeight_(900),
-	maxFPS_(60),
-	framePrintCounter_(0),
-	cameraSpeed_(5)
+MainGame::MainGame()
 {
+	// empty constructor
 }
 
 
@@ -29,12 +24,18 @@ void MainGame::run() {
 	initSys();
 	initLevel();
 
+	Bengine::Music music = audioEngine_.loadMusic("Sounds/Siste Viator.ogg");
+	music.play(-1);
+
 	gameLoop();
 }
 
 
 void MainGame::initSys() {
 	Bengine::init();
+
+	// initlialize sound, must happen after Bengine init
+	audioEngine_.init();
 
 	window_.create("Chancy", windowWidth_, windowHeight_, 0);
 
@@ -86,37 +87,42 @@ void MainGame::gameLoop() {
 
 	float previousTicks = SDL_GetTicks();
 
+	float newTicks = SDL_GetTicks();
+	float frameTime = newTicks - previousTicks;
+	previousTicks = newTicks;
+	float totalDeltaTime = frameTime / DESIRED_FRAMTIME;
+
+
 	// main loop
 	while (gameState_ != GameState::EXIT) {
-
 		fpsLimiter_.begin();
-
-		float newTicks = SDL_GetTicks();
-		float frameTime = newTicks - previousTicks;
-		previousTicks = newTicks;
-		float totalDeltaTime = frameTime / DESIRED_FRAMTIME;
-
-		switch (gameState_) 
+		// do actions according to gameState_
+		switch (gameState_)
 		{
+		case GameState::MENU:
+
+			processInput();
+
+			break;
 		case GameState::PLAY:
+
 			checkVictory();
+
+			inputManager_.update();
+
+			processInput();
+
+			int i = 0;
+			while (totalDeltaTime > 0.0f && i < MAX_PHYSICS_STEPS) {
+				float deltaTime = std::min(totalDeltaTime, MAX_DELTA_TIME);
+
+				// TODO: updateTerritories()
+
+				totalDeltaTime -= deltaTime;
+				i++;
+			}
+
 			break;
-		default:
-			break;
-		}
-
-		inputManager_.update();
-
-		processInput();
-
-		int i = 0;
-		while (totalDeltaTime > 0.0f && i < MAX_PHYSICS_STEPS) {
-			float deltaTime = std::min(totalDeltaTime, MAX_DELTA_TIME);
-
-			// TODO: updateTerritories()
-
-			totalDeltaTime -= deltaTime;
-			i++;
 		}
 
 		camera2D_.update();
@@ -222,28 +228,10 @@ void MainGame::processInput() {
 		if (territory != NULL) {
 			// turn territory black for testing purposes
 			if (territory->getColor().a < 255) {
-				territory->setColor(Bengine::ColorRGBA8(territory->getColor().r, territory->getColor().g, territory->getColor().b, 255));
-				for (auto it : territory->getUnitsT1()) {
-					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
-				}
-				for (auto it : territory->getUnitsT2()) {
-					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
-				}
-				for (auto it : territory->getUnitsT3()) {
-					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
-				}
+				lightUpTerritory(territory);
 			}
 			else {
-				territory->setColor(Bengine::ColorRGBA8(territory->getColor().r, territory->getColor().g, territory->getColor().b, 150));
-				for (auto it : territory->getUnitsT1()) {
-					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
-				}
-				for (auto it : territory->getUnitsT2()) {
-					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
-				}
-				for (auto it : territory->getUnitsT3()) {
-					it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
-				}
+				lightDownTerritory(territory);
 			}
 		}
 	}
@@ -252,45 +240,45 @@ void MainGame::processInput() {
 		// check if territory was hit by click
 		Territory* territory = checkDistanceToTerritory(camera2D_.convertScreenToWorld(inputManager_.getMouseCoords()));
 		if (territory != NULL) {
-			std::vector<UnitT1*> unitsT1 = territory->getUnitsT1();
-			std::vector<UnitT2*> unitsT2 = territory->getUnitsT2();
-			std::vector<UnitT3*> unitsT3 = territory->getUnitsT3();
-			if (unitsT1.size() == 5) {
-				if (unitsT2.size() == 5) {
-					unitsT3.emplace_back(new UnitT3(glm::vec4(territory->getPosition().x + territory->getUnitsT3().size() * territory->getPosition().z / 5,
-						territory->getPosition().y + territory->getPosition().w * 2 / 3, territory->getPosition().z / 5, territory->getPosition().w / 3),
-						territory->getUV(),
-						Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Candy1.png").id,
-						Bengine::ColorRGBA8(255, 255, 255, 150)));
-					// delete 5 T1 units 
-					for (unsigned int i = 0; i < 5; i++) {
-						delete unitsT2[i];
+			// if left control is pressed, remove units
+			if (inputManager_.isKeyDown(SDLK_LCTRL)) {
+				// if there are no more T1 units, delete one T2 unit (if available) and spawn four T1 units
+				if (territory->getUnitsT1().size() == 0) {
+					if (territory->getUnitsT2().size() == 0) {
+						// if there are no more T2 units, delete one T3 unit (if available) and spawn four T1 units
+						if (territory->getUnitsT3().size() != 0) {
+							unitTransformation(territory, 3, 2);
+						}
+						else {
+							std::cout << "NO MORE UNITS HERE!!" << std::endl;
+						}
+					} else {
+						unitTransformation(territory, 2, 1);
 					}
-					unitsT2.erase(unitsT2.begin(), unitsT2.end());
+				} else {
+					unitTransformation(territory, 1, 0);
+				}
+			// if left control is not pressed, add units
+			} else {
+				// if there are already four T1 units, delete them and spawn one T2 unit
+				if (territory->getUnitsT1().size() == 4) {
+					// if there are already four T2 units, delete them and spawn one T3 unit
+					if (territory->getUnitsT2().size() == 4) {
+						unitTransformation(territory, 2, 3);
+						territory->getUnitsT3()[territory->getUnitsT3().size() - 1]->getSpawnSoundEffect().play();
+					}
+					else {
+						unitTransformation(territory, 1, 2);
+						territory->getUnitsT2()[territory->getUnitsT2().size() - 1]->getSpawnSoundEffect().play();
+					}
 				}
 				else {
-					unitsT2.emplace_back(new UnitT2(glm::vec4(territory->getPosition().x + territory->getUnitsT2().size() * territory->getPosition().z / 5,
-						territory->getPosition().y + territory->getPosition().w / 3, territory->getPosition().z / 5, territory->getPosition().w / 3),
-						territory->getUV(),
-						Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Broccoli1.png").id,
-						Bengine::ColorRGBA8(255, 255, 255, 150)));
-					// delete 5 T1 units 
-					for (unsigned int i = 0; i < 5; i++) {
-						delete unitsT1[i];
-					}
-					unitsT1.erase(unitsT1.begin(), unitsT1.end());
+					// spawn one T1
+					unitTransformation(territory, 0, 1);
+					territory->getUnitsT1()[territory->getUnitsT1().size() - 1]->getSpawnSoundEffect().play();
 				}
+				lightUpTerritory(territory);
 			}
-			else {
-				unitsT1.emplace_back(new UnitT1(glm::vec4(territory->getPosition().x + territory->getUnitsT1().size() * territory->getPosition().z / 5,
-						territory->getPosition().y, territory->getPosition().z / 5, territory->getPosition().w / 3),
-					territory->getUV(),
-					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Mushroom1.png").id,
-					Bengine::ColorRGBA8(255, 255, 255, 150)));
-			}
-			territory->setUnitsT1(unitsT1);
-			territory->setUnitsT2(unitsT2);
-			territory->setUnitsT3(unitsT3);
 		}
 	}
 }
@@ -360,6 +348,7 @@ void MainGame::drawGame() {
 	window_.swapBuffer();
 }
 
+
 void MainGame::drawHud() {
 	// set the camera matrix
 	glm::mat4 cameraMatrix = hudCamera2D_.getCameraMatrix();
@@ -380,6 +369,9 @@ void MainGame::drawHud() {
 }
 
 
+/**
+	checks if there are any territories hit by mouse click
+*/
 Territory* MainGame::checkDistanceToTerritory(glm::vec2 mousePos) {
 	for (auto it : levels_[currentLevel_]->getTerritories()) {
 		glm::vec4 territoryPos = it->getPosition();
@@ -395,6 +387,153 @@ Territory* MainGame::checkDistanceToTerritory(glm::vec2 mousePos) {
 }
 
 
+/**
+performs a unit transformation from tier Tx into tier Ty in territory
+*/
+void MainGame::unitTransformation(Territory* territory, int Tx, int Ty) {
+	std::vector<UnitT1*> unitsT1 = territory->getUnitsT1();
+	std::vector<UnitT2*> unitsT2 = territory->getUnitsT2();
+	std::vector<UnitT3*> unitsT3 = territory->getUnitsT3();
+	switch (Tx) {
+	case 1:
+		if (Tx < Ty) {
+			// delete four T1 units (if they are to be transformed into one T2 unit)
+			for (unsigned int i = 0; i < 4; i++) {
+				delete unitsT1[i];
+			}
+			unitsT1.erase(unitsT1.begin(), unitsT1.end());
+		} else {
+			// delete only one T1 unit (if it is to be removed)
+			delete unitsT1[unitsT1.size() - 1];
+			unitsT1.pop_back();
+		}
+		break;
+	case 2:
+		if (Tx < Ty) {
+			// delete four T2 and four T1 units (if they are to be transformed into one T3 unit)
+			for (unsigned int i = 0; i < 4; i++) {
+				delete unitsT2[3 - i];
+				delete unitsT1[3 - i];
+				unitsT2.pop_back();
+				unitsT1.pop_back();
+			}
+		} else {
+			// delete only one T2 unit (if it is to be transformed into four T1 units)
+			delete unitsT2[unitsT2.size() - 1];
+			unitsT2.pop_back();
+		}
+		break;
+	case 3:
+		// delete one T3 units (can only go from one T3 unit to four T2 and four T1 units)
+		delete unitsT3[unitsT3.size() - 1];
+		unitsT3.pop_back();
+		break;
+	default:
+		break;
+	}
+	switch (Ty) {
+	case 1:
+		unsigned int j;
+		if (Tx < Ty) { j = 1; }  /// if only spawn one T1 unit
+		else		 { j = 4; }  /// if transform a T2 unit into four T1
+
+		// add j new T1 unit to the unitsT1 vector
+		for (unsigned int i = 0; i < j; i++) {
+			unitsT1.emplace_back(new UnitT1(glm::vec4(territory->getPosition().x + (territory->getUnitsT1().size() + i) * territory->getPosition().z / 4,
+				territory->getPosition().y, territory->getPosition().z / 4, territory->getPosition().w / 3),
+				territory->getUV(),
+				Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Mushroom1.png").id,
+				Bengine::ColorRGBA8(255, 255, 255, 150),
+				audioEngine_.loadSoundEffect("Sounds/slimy_monster1.mp3")));
+		}
+		break;
+	case 2:
+		// if four T1 are to be transformed into one T2
+		if (Tx < Ty) {
+			// add one new T2 unit to the unitsT2 vector
+			unitsT2.emplace_back(new UnitT2(glm::vec4(territory->getPosition().x + territory->getUnitsT2().size() * territory->getPosition().z / 4,
+				territory->getPosition().y + territory->getPosition().w / 3, territory->getPosition().z / 4, territory->getPosition().w / 3),
+				territory->getUV(),
+				Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Broccoli1.png").id,
+				Bengine::ColorRGBA8(255, 255, 255, 150),
+				audioEngine_.loadSoundEffect("Sounds/slimy_monster2.mp3")));
+		}
+		// if one T3 unit is to be transformed into four T2 and four T1 units
+		else { 
+			for (unsigned int i = 0; i < 4; i++) {
+				// add a new T2 unit to the unitsT2 vector
+				unitsT2.emplace_back(new UnitT2(glm::vec4(territory->getPosition().x + (territory->getUnitsT2().size() + i) * territory->getPosition().z / 4,
+					territory->getPosition().y + territory->getPosition().w / 3, territory->getPosition().z / 4, territory->getPosition().w / 3),
+					territory->getUV(),
+					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Broccoli1.png").id,
+					Bengine::ColorRGBA8(255, 255, 255, 150),
+					audioEngine_.loadSoundEffect("Sounds/slimy_monster2.mp3")));
+				// add a new T3 unit to the unitsT3 vector
+				unitsT1.emplace_back(new UnitT1(glm::vec4(territory->getPosition().x + (territory->getUnitsT1().size() + i) * territory->getPosition().z / 4,
+					territory->getPosition().y, territory->getPosition().z / 4, territory->getPosition().w / 3),
+					territory->getUV(),
+					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Mushroom1.png").id,
+					Bengine::ColorRGBA8(255, 255, 255, 150),
+					audioEngine_.loadSoundEffect("Sounds/slimy_monster1.mp3")));
+			}
+		}  
+
+		break;
+	case 3:
+		// add one new T3 unit to the unitsT3 vector
+		unitsT3.emplace_back(new UnitT3(glm::vec4(territory->getPosition().x + territory->getUnitsT3().size() * territory->getPosition().z / 4,
+			territory->getPosition().y + territory->getPosition().w * 2 / 3, territory->getPosition().z / 4, territory->getPosition().w / 3),
+			territory->getUV(),
+			Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Candy1.png").id,
+			Bengine::ColorRGBA8(255, 255, 255, 150),
+			audioEngine_.loadSoundEffect("Sounds/slimy_monster.mp3")));
+		break;
+	default:
+		break;
+	}
+	territory->setUnitsT1(unitsT1);
+	territory->setUnitsT2(unitsT2);
+	territory->setUnitsT3(unitsT3);
+}
+
+
+/**
+	light up all units and the sprite of territory
+*/
+void MainGame::lightUpTerritory(Territory* territory) {
+	territory->setColor(Bengine::ColorRGBA8(territory->getColor().r, territory->getColor().g, territory->getColor().b, 255));
+	for (auto it : territory->getUnitsT1()) {
+		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+	}
+	for (auto it : territory->getUnitsT2()) {
+		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+	}
+	for (auto it : territory->getUnitsT3()) {
+		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+	}
+}
+
+
+/**
+	light down all units and the sprite of territory
+*/
+void MainGame::lightDownTerritory(Territory* territory) {
+	territory->setColor(Bengine::ColorRGBA8(territory->getColor().r, territory->getColor().g, territory->getColor().b, 150));
+	for (auto it : territory->getUnitsT1()) {
+		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+	}
+	for (auto it : territory->getUnitsT2()) {
+		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+	}
+	for (auto it : territory->getUnitsT3()) {
+		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+	}
+}
+
+
+/**
+	print current fps to the console
+*/
 void MainGame::printFPS(int interval) {
 	if (framePrintCounter_ == interval) {
 		std::cout << fps_ << std::endl;

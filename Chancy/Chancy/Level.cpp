@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "Territory.h"
 
-#include <Bengine/Error.h>
+#include <Bengine/BengineError.h>
 
 #include <fstream>
 

@@ -2,7 +2,7 @@
 #include "picopng.h"
 
 #include "IOManager.h"
-#include "Error.h"
+#include "BengineError.h"
 
 namespace Bengine {
 

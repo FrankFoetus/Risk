@@ -1,4 +1,4 @@
-#include "Error.h"
+#include "BengineError.h"
 
 #include <cstdlib>
 #include <iostream>

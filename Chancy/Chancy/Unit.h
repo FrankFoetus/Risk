@@ -3,11 +3,13 @@
 #include <GL\glew.h>
 #include <Bengine\SpriteBatch.h>
 #include <Bengine\RessourceManager.h>
+#include <Bengine\AudioEngine.h>
 
 class Unit
 {
 public:
-	Unit(glm::vec4 position, glm::vec4 uv, int textureID, Bengine::ColorRGBA8 color);
+	Unit(glm::vec4 position, glm::vec4 uv, int textureID, 
+		Bengine::ColorRGBA8 color, Bengine::SoundEffect spawnSoundEffect);
 	Unit();
 	~Unit();
 
@@ -15,16 +17,21 @@ public:
 	glm::vec4 getUV() { return uv_; }
 	Bengine::ColorRGBA8 getColor() { return color_; }
 	GLuint getTextureID() { return textureID_; }
+	Bengine::SoundEffect getSpawnSoundEffect() { return spawnSoundEffect_; }
 
 	void setPosition(glm::vec4 position) { position_ = position; }
 	void setUV(glm::vec4 uv) { uv_ = uv; }
 	void setColor(Bengine::ColorRGBA8 color) { color_ = color; }
 	void setTextureID(GLuint textureID) { textureID_ = textureID; }
+	void setSpawnSOundEffect(Bengine::SoundEffect spawnSoundEffect) { spawnSoundEffect_ = spawnSoundEffect; }
 
 	// draw the unit to the unit sprite batch
 	void draw(Bengine::SpriteBatch* spriteBatch);
 
-private:
+protected:
+
+	Bengine::SoundEffect spawnSoundEffect_;
+
 	glm::vec4 position_;
 	glm::vec4 uv_;
 	Bengine::ColorRGBA8 color_;
