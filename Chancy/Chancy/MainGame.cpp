@@ -49,9 +49,6 @@ void MainGame::initSys() {
 
 	hudSpritebatch_.init();
 	territoryBatch_.init();
-	unitsT1Batch_.init();
-	unitsT2Batch_.init();
-	unitsT3Batch_.init();
 
 	// initialize the spriteFont
 	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 32);
@@ -316,30 +313,20 @@ void MainGame::drawGame() {
 
 	// draw the territories
 	territoryBatch_.begin();
-	// sprite batch for units
-	unitsT1Batch_.begin();
-	unitsT2Batch_.begin();
-	unitsT3Batch_.begin();
 
 	for (auto it : territories_) {
 		// draw all territories to the sprite batch
-		it->draw(&territoryBatch_, &unitsT1Batch_, &unitsT2Batch_, &unitsT3Batch_);
+		it->draw(&territoryBatch_);
 	}
 
 	territoryBatch_.end();
-	unitsT1Batch_.end();
-	unitsT2Batch_.end();
-	unitsT3Batch_.end();
 	// render the territories
 	territoryBatch_.renderBatch();
-	unitsT1Batch_.renderBatch();
-	unitsT2Batch_.renderBatch();
-	unitsT3Batch_.renderBatch();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// draw the hud
-	//drawHud();
+	drawHud();
 
 	// disable the shader
 	colorProgram_.unuse();
@@ -360,9 +347,9 @@ void MainGame::drawHud() {
 
 	hudSpritebatch_.begin();
 
-	sprintf_s(buffer, "abcdefgh");
-	spriteFont_->draw(hudSpritebatch_, buffer, glm::vec2(100,100), 
-						glm::vec2(4.0), 0.0f, Bengine::ColorRGBA8(255,255,255,255));
+	sprintf_s(buffer, "Welcome to Chancy!");
+	spriteFont_->draw(hudSpritebatch_, buffer, glm::vec2(500,800), 
+						glm::vec2(2.0), 0.0f, Bengine::ColorRGBA8(255,255,255,255));
 
 	hudSpritebatch_.end();
 	hudSpritebatch_.renderBatch();

@@ -42,12 +42,11 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 			// get dest rect
 			glm::vec4 destRect(-double(windowWidth_/2)+x*TILE_WIDTH, -double(windowHeight_/2)+y*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
 
-			std::string territoryName = territoryNames_[1];
+			std::string territoryName = territoryNames_[0];
 			unsigned int ind = 0;
-			while (territoryName != territoryNames_[ind]) { 
+			while (territoryName != territoryNames_[ind++]) {
 				if (ind >= territoryNames_.size())
 					Bengine::fatalError("Ran out of territory names!");
-				ind++;
 			}
 
 			// process the tile

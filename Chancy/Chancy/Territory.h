@@ -41,12 +41,12 @@ public:
 	void setUnitsT2(std::vector<UnitT2*> unitsT2) { unitsT2_ = unitsT2; }
 	void setUnitsT3(std::vector<UnitT3*> unitsT3) { unitsT3_ = unitsT3; }
 
-	void draw(Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* unitsBatch, Bengine::SpriteBatch* unitsT2Batch, Bengine::SpriteBatch* unitsT3Batch);
+	void draw(Bengine::SpriteBatch* territoryBatch);
 
 	void update();
 
 private:
-	void drawUnits(Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* unitsT2Batch, Bengine::SpriteBatch* unitsT3Batch);
+	void drawUnits(Bengine::SpriteBatch* territoryBatch);
 
 	std::string name_;
 

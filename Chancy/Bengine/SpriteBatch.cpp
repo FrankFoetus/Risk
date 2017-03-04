@@ -51,6 +51,8 @@ namespace Bengine {
 			glBindTexture(GL_TEXTURE_2D, _renderBatches[i].texture);
 
 			glDrawArrays(GL_TRIANGLES, _renderBatches[i].offset, _renderBatches[i].numVertices);
+
+			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 
 		glBindVertexArray(0);
@@ -81,7 +83,7 @@ namespace Bengine {
 
 		for (int cg = 1; cg < _glyphsPointers.size(); cg++) {
 			if (_glyphsPointers[cg]->texture != _glyphsPointers[cg - 1]->texture) {
-				_renderBatches.emplace_back(offset, 6, _glyphsPointers[0]->texture);
+				_renderBatches.emplace_back(offset, 6, _glyphsPointers[cg]->texture);
 			}
 			else {
 				_renderBatches.back().numVertices += 6;

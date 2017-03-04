@@ -13,21 +13,21 @@ Territory::~Territory()
 }
 
 
-void Territory::draw(Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* unitsT1Batch, Bengine::SpriteBatch* unitsT2Batch, Bengine::SpriteBatch* unitsT3Batch) {
-	territoryBatch->draw(position_, uv_, textureID_, 0, color_);
-	drawUnits(unitsT1Batch, unitsT2Batch, unitsT3Batch);
+void Territory::draw(Bengine::SpriteBatch* spriteBatch) {
+	spriteBatch->draw(position_, uv_, textureID_, 0, color_);
+	drawUnits(spriteBatch);
 }
 
 
-void Territory::drawUnits(Bengine::SpriteBatch* unitsT1Batch, Bengine::SpriteBatch* unitsT2Batch, Bengine::SpriteBatch* unitsT3Batch) {
+void Territory::drawUnits(Bengine::SpriteBatch* spriteBatch) {
 	for (auto it : unitsT1_) {
-		it->draw(unitsT1Batch);
+		it->draw(spriteBatch);
 	}
 	for (auto it : unitsT2_) {
-		it->draw(unitsT2Batch);
+		it->draw(spriteBatch);
 	}
 	for (auto it : unitsT3_) {
-		it->draw(unitsT3Batch);
+		it->draw(spriteBatch);
 	}
 }
 
