@@ -19,8 +19,9 @@
 #include "Level.h"
 #include "Territory.h"
 #include "Player.h"
-
-enum class GameState { MENU, PLAY, EXIT };
+#include "StatePhase1.h"
+#include "StateMenu.h"
+#include "Util.h"
 
 class MainGame
 {
@@ -36,21 +37,14 @@ private:
 	void initLevel();
 	void initShaders();
 
-	void processInput();
-	void drawGame();
 	void drawHud();
 	void checkVictory();
 	Territory* checkDistanceToTerritory(glm::vec2 mousePos);
-
-	void unitTransformation(Territory* territory, int Tx, int Ty); 
-	void lightUpTerritory(Territory* territory);
-	void lightDownTerritory(Territory* territory);
 
 	void printFPS(int interval);
 
 
 	std::vector<Level*> levels_; /// vector of levels
-	std::vector<Territory*> territories_; /// vector of territories
 	int currentLevel_;
 
 	std::vector<Player*> players_;
@@ -59,31 +53,31 @@ private:
 	Bengine::Window window_;
 	Bengine::InputManager inputManager_;
 	Bengine::GLSLProgram colorProgram_;
-
+	Bengine::AudioEngine audioEngine_;
 	Bengine::Camera2D camera2D_;
 	Bengine::Camera2D hudCamera2D_;
-
-	Bengine::FpsLimiter fpsLimiter_;
-
 	Bengine::SpriteFont* spriteFont_;
-
-	Bengine::AudioEngine audioEngine_;
 
 	Bengine::SpriteBatch hudSpritebatch_;
 	Bengine::SpriteBatch territoryBatch_;
-	Bengine::SpriteBatch unitsT1Batch_;
-	Bengine::SpriteBatch unitsT2Batch_;
-	Bengine::SpriteBatch unitsT3Batch_;
 
+	Bengine::FpsLimiter fpsLimiter_;
+	
 	GLuint windowWidth_ = 1600;
 	GLuint windowHeight_ = 900;
 
 	float cameraSpeed_ = 5.f;
+	float scaleSpeed_ = 0.025f;
 
 	int framePrintCounter_ = 0;
 	float fps_;
 	float maxFPS_ = 60.f;
 
-	GameState gameState_ = GameState::PLAY;
+	GameState gameState_ = GameState::MENU;
+
+	StateMenu* stateMenu_ = new StateMenu();
+	StatePhase1* statePhase1_ = new StatePhase1();
+
+	std::vector<Territory*> territories_;
 };
 

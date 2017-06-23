@@ -4,6 +4,7 @@
 #include <Bengine/BengineError.h>
 
 #include <fstream>
+#include <iostream>
 
 
 Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidth_) {
@@ -32,6 +33,8 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 	}
 
 	glm::vec4 uvRect(0.0f, 0.0f, 1.0f, 1.0f);
+	// index for territory names
+	unsigned int ind = 0;
 
 	// render all tiles
 	for (GLuint y = 0; y < levelData_.size(); y++) {
@@ -41,18 +44,11 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 
 			// get dest rect
 			glm::vec4 destRect(-double(windowWidth_/2)+x*TILE_WIDTH, -double(windowHeight_/2)+y*TILE_WIDTH, TILE_WIDTH, TILE_WIDTH);
-
-			std::string territoryName = territoryNames_[0];
-			unsigned int ind = 0;
-			while (territoryName != territoryNames_[ind++]) {
-				if (ind >= territoryNames_.size())
-					Bengine::fatalError("Ran out of territory names!");
-			}
-
+			
 			// process the tile
 			switch (tile) {
 			case 'R':
-				territory_ = new Territory(territoryName, destRect, uvRect,
+				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(255, 0, 0, 150));
 				// place the new territory into all territories vector
@@ -61,7 +57,7 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 				continents_[0]->getTerritories().push_back(territory_);
 				break;
 			case 'G':
-				territory_ = new Territory(territoryName, destRect, uvRect,
+				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(0, 255, 0, 150));
 				// place the new territory into all territories vector
@@ -70,7 +66,7 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 				continents_[1]->getTerritories().push_back(territory_);
 				break;
 			case 'B':
-				territory_ = new Territory(territoryName, destRect, uvRect,
+				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(0, 0, 255, 150));
 				// place the new territory into all territories vector
@@ -79,7 +75,7 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 				continents_[2]->getTerritories().push_back(territory_);
 				break;
 			case 'Y':
-				territory_ = new Territory(territoryName, destRect, uvRect,
+				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(0, 255, 255, 150));
 				// place the new territory into all territories vector
@@ -88,7 +84,7 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 				continents_[3]->getTerritories().push_back(territory_);
 				break;
 			case 'M':
-				territory_ = new Territory(territoryName, destRect, uvRect,
+				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(255, 0, 255, 150));
 				// place the new territory into all territories vector
@@ -97,7 +93,7 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 				continents_[4]->getTerritories().push_back(territory_);
 				break;
 			case 'C':
-				territory_ = new Territory(territoryName, destRect, uvRect,
+				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(255, 255, 0, 150));
 				// place the new territory into all territories vector

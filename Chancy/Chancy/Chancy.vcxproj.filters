@@ -39,13 +39,16 @@
     <ClInclude Include="Unit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnitT2.h">
+    <ClInclude Include="StatePhase1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnitT3.h">
+    <ClInclude Include="StateMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UnitT1.h">
+    <ClInclude Include="Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="State.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -79,13 +82,13 @@
     <ClCompile Include="Unit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitT2.cpp">
+    <ClCompile Include="StatePhase1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitT3.cpp">
+    <ClCompile Include="StateMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UnitT1.cpp">
+    <ClCompile Include="State.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
