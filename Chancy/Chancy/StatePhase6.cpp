@@ -1,31 +1,17 @@
-#include "StatePhase1.h"
+#include "StatePhase6.h"
 
 
-StatePhase1::StatePhase1()
+
+StatePhase6::StatePhase6()
 {
-	//empty
 }
 
 
-StatePhase1::~StatePhase1()
+StatePhase6::~StatePhase6()
 {
-	//empty
 }
 
-
-void StatePhase1::enterState(Player* currentPlayer) {
-	// set the current Player
-	currentPlayer_ = currentPlayer;
-	// light down all territories
-	for (auto terr : territories_) {
-		terr->lightUpTerritory();
-	}
-	// get the number of reinforcements
-	numberOfReinforcements_ = calculateReinforcements();
-}
-
-
-void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
+void StatePhase6::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
 
 	SDL_Event evt;
 
@@ -73,25 +59,25 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 	}
 	if (inputManager_->isKeyDown(SDLK_w)) {
 		if (camera2D_->getPosition().y < windowHeight_ / 2) {  // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+															   // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(0.0, *cameraSpeed));
 		}
 	}
 	if (inputManager_->isKeyDown(SDLK_s)) {
 		if (camera2D_->getPosition().y > 0) { // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+											  // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(0.0, -*cameraSpeed));
 		}
 	}
 	if (inputManager_->isKeyDown(SDLK_a)) {
 		if (camera2D_->getPosition().x > 0) { // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+											  // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(-*cameraSpeed, 0.0));
 		}
 	}
 	if (inputManager_->isKeyDown(SDLK_d)) {
 		if (camera2D_->getPosition().x < windowWidth_ / 2) { // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+															 // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(*cameraSpeed, 0.0));
 		}
 	}
@@ -106,30 +92,13 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 	// process return click
 	if (inputManager_->isKeyPressed(SDLK_RETURN)) {
 		// go to the next phase
-		gameState = GameState::PHASE2;
-		std::cout << "ENTERING PHASE 2" << std::endl;
-	}
-
-	// process left mouse click
-	if (inputManager_->isKeyPressed(SDL_BUTTON_LEFT)) {
-		// check if territory was hit by click
-		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
-		if (territory != NULL) {
-			territory->addUnit(audioEngine_);
-		}
-	}
-
-	// process right mouse click
-	if (inputManager_->isKeyPressed(SDL_BUTTON_RIGHT)) {
-		// check if territory was hit by click
-		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
-		if (territory != NULL) {
-			territory->destroyUnit(audioEngine_);
-		}
+		gameState = GameState::PHASE1;
+		std::cout << "ENTERING PHASE 1" << std::endl;
 	}
 }
 
-void StatePhase1::drawGame() {
+
+void StatePhase6::drawGame() {
 
 	camera2D_->update();
 	hudCamera2D_->update();
@@ -176,29 +145,11 @@ void StatePhase1::drawGame() {
 
 	// draw the hud
 	int numberOfReinforcements = 5;
-	drawHud("Phase 1: Place your reinforcements! " + std::to_string(numberOfReinforcements) + " left.", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud("Phase 6: Move troops!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
 
 	// disable the shader
 	colorProgram_->unuse();
 
 	// setup our buffer and draw everything to the screen
 	window_->swapBuffer();
-}
-
-int StatePhase1::calculateReinforcements() {
-	// initialize #reinforcements
-	int numberOfReinforcements = 0;
-	// add 1 reinforcement for every owned territory
-	for (auto territory : territories_) {
-		if (territory->getOwner() == currentPlayer_) {
-			numberOfReinforcements++;
-		}
-	}
-	// add continental boni
-	for (auto continent : continents_) {
-		if (continent->getOwner() == currentPlayer_) {
-			numberOfReinforcements += continent->getBonus();
-		}
-	}
-	return numberOfReinforcements;
 }

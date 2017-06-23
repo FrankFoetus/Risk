@@ -51,11 +51,23 @@ void MainGame::initSys() {
 	// initialize the spriteFont
 	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 32);
 
+	// initialize Player
+	players_.push_back(new Player());
 	initLevel();
 	// initialize states
 	stateMenu_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_, 
 						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
-	statePhase1_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_, 
+	statePhase1_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+	statePhase2_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+	statePhase3_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+	statePhase4_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+	statePhase5_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+	statePhase6_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
 						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
 }
 
@@ -100,8 +112,39 @@ void MainGame::gameLoop() {
 		case GameState::PHASE1:
 
 			inputManager_.update();
+			statePhase1_->enterState(players_[0]);
 			statePhase1_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase1_->drawGame();
+			break;
+		case GameState::PHASE2:
+
+			inputManager_.update();
+			statePhase2_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
+			statePhase2_->drawGame();
+			break;
+		case GameState::PHASE3:
+
+			inputManager_.update();
+			statePhase3_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
+			statePhase3_->drawGame();
+			break;
+		case GameState::PHASE4:
+
+			inputManager_.update();
+			statePhase4_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
+			statePhase4_->drawGame();
+			break;
+		case GameState::PHASE5:
+
+			inputManager_.update();
+			statePhase5_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
+			statePhase5_->drawGame();
+			break;
+		case GameState::PHASE6:
+
+			inputManager_.update();
+			statePhase6_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
+			statePhase6_->drawGame();
 			break;
 		}
 

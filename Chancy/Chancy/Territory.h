@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <iostream>
 
 #include <glm\glm.hpp>
 #include <GL\glew.h>
@@ -12,6 +13,7 @@
 #include "Unit.h"
 
 class Player;
+class Continent;
 
 class Territory
 {
@@ -26,6 +28,7 @@ public:
 	GLuint getTextureID() { return textureID_; }
 
 	Player* getOwner() { return owner_; }
+	Continent* getContinent() { return continent_; }
 	std::vector<Unit*> getUnitsT1() { return unitsT1_; }
 	std::vector<Unit*> getUnitsT2() { return unitsT2_; }
 	std::vector<Unit*> getUnitsT3() { return unitsT3_; }
@@ -36,15 +39,22 @@ public:
 	void setTextureID(GLuint textureID) { textureID_ = textureID; }
 
 	void setOwner(Player* player) { owner_ = player; }
+	void setContinent(Continent* continent) { continent_ = continent; }
 	void setUnitsT1(std::vector<Unit*> unitsT1) { unitsT1_ = unitsT1; }
 	void setUnitsT2(std::vector<Unit*> unitsT2) { unitsT2_ = unitsT2; }
 	void setUnitsT3(std::vector<Unit*> unitsT3) { unitsT3_ = unitsT3; }
 
-	void draw(Bengine::SpriteBatch* territoryBatch);
+	void addUnit(Bengine::AudioEngine* audioEngine);
+	void destroyUnit(Bengine::AudioEngine* audioEngine);
+	void lightUpTerritory();
+	void lightDownTerritory();
 
 	void update();
+	void draw(Bengine::SpriteBatch* territoryBatch);
 
 private:
+	void unitTransformation(Bengine::AudioEngine* audioEngine, int Tx, int Ty);
+
 	void drawUnits(Bengine::SpriteBatch* territoryBatch);
 
 	std::string name_;
@@ -54,6 +64,7 @@ private:
 	Bengine::ColorRGBA8 color_;
 	GLuint textureID_;
 
+	Continent* continent_ = nullptr;
 	Player* owner_ = nullptr;
 	std::vector<Unit*> unitsT1_;
 	std::vector<Unit*> unitsT2_;

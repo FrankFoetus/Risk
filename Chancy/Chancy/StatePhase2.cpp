@@ -1,31 +1,17 @@
-#include "StatePhase1.h"
+#include "StatePhase2.h"
 
 
-StatePhase1::StatePhase1()
+StatePhase2::StatePhase2()
 {
-	//empty
 }
 
 
-StatePhase1::~StatePhase1()
+StatePhase2::~StatePhase2()
 {
-	//empty
 }
 
 
-void StatePhase1::enterState(Player* currentPlayer) {
-	// set the current Player
-	currentPlayer_ = currentPlayer;
-	// light down all territories
-	for (auto terr : territories_) {
-		terr->lightUpTerritory();
-	}
-	// get the number of reinforcements
-	numberOfReinforcements_ = calculateReinforcements();
-}
-
-
-void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
+void StatePhase2::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
 
 	SDL_Event evt;
 
@@ -73,25 +59,25 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 	}
 	if (inputManager_->isKeyDown(SDLK_w)) {
 		if (camera2D_->getPosition().y < windowHeight_ / 2) {  // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+															   // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(0.0, *cameraSpeed));
 		}
 	}
 	if (inputManager_->isKeyDown(SDLK_s)) {
 		if (camera2D_->getPosition().y > 0) { // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+											  // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(0.0, -*cameraSpeed));
 		}
 	}
 	if (inputManager_->isKeyDown(SDLK_a)) {
 		if (camera2D_->getPosition().x > 0) { // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+											  // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(-*cameraSpeed, 0.0));
 		}
 	}
 	if (inputManager_->isKeyDown(SDLK_d)) {
 		if (camera2D_->getPosition().x < windowWidth_ / 2) { // TODO: scale the borders for camera movement with camera zoom
-			// update camera position
+															 // update camera position
 			camera2D_->setPosition(camera2D_->getPosition() + glm::vec2(*cameraSpeed, 0.0));
 		}
 	}
@@ -106,30 +92,46 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 	// process return click
 	if (inputManager_->isKeyPressed(SDLK_RETURN)) {
 		// go to the next phase
-		gameState = GameState::PHASE2;
-		std::cout << "ENTERING PHASE 2" << std::endl;
+		gameState = GameState::PHASE3;
+		std::cout << "ENTERING PHASE 3" << std::endl;
 	}
 
 	// process left mouse click
 	if (inputManager_->isKeyPressed(SDL_BUTTON_LEFT)) {
-		// check if territory was hit by click
-		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
-		if (territory != NULL) {
-			territory->addUnit(audioEngine_);
+		// check if something was hit
+		//checkDistanceToPurchases()
+		// if space station was hit, player also needs to hit a territory
+		if (spaceStationIsChosen_) {
+			// add space station to cart
+
+			// check if territory was hit by click
+			Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
+			if (territory != NULL) {
+				// if territory is not lid up, light it up
+				if (territory->getColor().a < 255) {
+					// check if the maximum number of territories a space station can be placed is already reached
+					if (numberOfTerritoriesChosen_ <= maxNumberOfSpaceStations) {
+						territory->lightUpTerritory();
+						numberOfTerritoriesChosen_++;
+					}
+					else {
+						std::cout << "already too many territories chosen!" << std::endl;
+					}
+				}
+				else {
+					territory->lightDownTerritory();
+					numberOfTerritoriesChosen_--;
+				}
+			}
 		}
+		// if something is hit, add it to cart
+		//...
 	}
 
-	// process right mouse click
-	if (inputManager_->isKeyPressed(SDL_BUTTON_RIGHT)) {
-		// check if territory was hit by click
-		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
-		if (territory != NULL) {
-			territory->destroyUnit(audioEngine_);
-		}
-	}
 }
 
-void StatePhase1::drawGame() {
+
+void StatePhase2::drawGame() {
 
 	camera2D_->update();
 	hudCamera2D_->update();
@@ -176,29 +178,12 @@ void StatePhase1::drawGame() {
 
 	// draw the hud
 	int numberOfReinforcements = 5;
-	drawHud("Phase 1: Place your reinforcements! " + std::to_string(numberOfReinforcements) + " left.", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud("Phase 2: Buy commanders and space stations!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud(std::to_string(numberOfReinforcements) + " energy left.", glm::vec2(-750, 260), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
 
 	// disable the shader
 	colorProgram_->unuse();
 
 	// setup our buffer and draw everything to the screen
 	window_->swapBuffer();
-}
-
-int StatePhase1::calculateReinforcements() {
-	// initialize #reinforcements
-	int numberOfReinforcements = 0;
-	// add 1 reinforcement for every owned territory
-	for (auto territory : territories_) {
-		if (territory->getOwner() == currentPlayer_) {
-			numberOfReinforcements++;
-		}
-	}
-	// add continental boni
-	for (auto continent : continents_) {
-		if (continent->getOwner() == currentPlayer_) {
-			numberOfReinforcements += continent->getBonus();
-		}
-	}
-	return numberOfReinforcements;
 }

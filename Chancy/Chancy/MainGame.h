@@ -19,8 +19,13 @@
 #include "Level.h"
 #include "Territory.h"
 #include "Player.h"
-#include "StatePhase1.h"
 #include "StateMenu.h"
+#include "StatePhase1.h"
+#include "StatePhase2.h"
+#include "StatePhase3.h"
+#include "StatePhase4.h"
+#include "StatePhase5.h"
+#include "StatePhase6.h"
 #include "Util.h"
 
 class MainGame
@@ -50,6 +55,8 @@ private:
 	std::vector<Player*> players_;
 	int currentPlayer_;
 
+	std::vector<Territory*> territories_;
+
 	Bengine::Window window_;
 	Bengine::InputManager inputManager_;
 	Bengine::GLSLProgram colorProgram_;
@@ -77,7 +84,10 @@ private:
 
 	StateMenu* stateMenu_ = new StateMenu();
 	StatePhase1* statePhase1_ = new StatePhase1();
-
-	std::vector<Territory*> territories_;
+	StatePhase2* statePhase2_ = new StatePhase2();
+	StatePhase3* statePhase3_ = new StatePhase3();
+	StatePhase4* statePhase4_ = new StatePhase4();
+	StatePhase5* statePhase5_ = new StatePhase5();
+	StatePhase6* statePhase6_ = new StatePhase6();
 };
 

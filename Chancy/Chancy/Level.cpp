@@ -51,55 +51,55 @@ Level::Level(const std::string fileName, GLuint windowHeight_, GLuint windowWidt
 				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(255, 0, 0, 150));
+				// set the continent for the territory
+				territory_->setContinent(continents_[0]);
 				// place the new territory into all territories vector
 				territories_.push_back(territory_);
-				// place the new territory into continents_[0] vector
-				continents_[0]->getTerritories().push_back(territory_);
 				break;
 			case 'G':
 				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(0, 255, 0, 150));
+				// set the continent for the territory
+				territory_->setContinent(continents_[1]);
 				// place the new territory into all territories vector
 				territories_.push_back(territory_);
-				// place the new territory into continents_[1] vector
-				continents_[1]->getTerritories().push_back(territory_);
 				break;
 			case 'B':
 				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(0, 0, 255, 150));
+				// set the continent for the territory
+				territory_->setContinent(continents_[2]);
 				// place the new territory into all territories vector
 				territories_.push_back(territory_);
-				// place the new territory into continents_[2] vector
-				continents_[2]->getTerritories().push_back(territory_);
 				break;
 			case 'Y':
 				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(0, 255, 255, 150));
+				// set the continent for the territory
+				territory_->setContinent(continents_[3]);
 				// place the new territory into all territories vector
 				territories_.push_back(territory_);
-				// place the new territory into continents_[3] vector
-				continents_[3]->getTerritories().push_back(territory_);
 				break;
 			case 'M':
 				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(255, 0, 255, 150));
+				// set the continent for the territory
+				territory_->setContinent(continents_[4]);
 				// place the new territory into all territories vector
 				territories_.push_back(territory_);
-				// place the new territory into continents_[4] vector
-				continents_[4]->getTerritories().push_back(territory_);
 				break;
 			case 'C':
 				territory_ = new Territory(territoryNames_[ind++], destRect, uvRect,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Buttons/ButtonSquare_BeigheDark.png").id,
 					Bengine::ColorRGBA8(255, 255, 0, 150));
+				// set the continent for the territory
+				territory_->setContinent(continents_[5]);
 				// place the new territory into all territories vector
 				territories_.push_back(territory_);
-				// place the new territory into continents_[5] vector
-				continents_[5]->getTerritories().push_back(territory_);
 				break;
 			case '.':
 				break;

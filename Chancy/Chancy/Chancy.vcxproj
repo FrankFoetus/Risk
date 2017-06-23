@@ -133,6 +133,11 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="StateMenu.h" />
     <ClInclude Include="StatePhase1.h" />
+    <ClInclude Include="StatePhase2.h" />
+    <ClInclude Include="StatePhase3.h" />
+    <ClInclude Include="StatePhase4.h" />
+    <ClInclude Include="StatePhase5.h" />
+    <ClInclude Include="StatePhase6.h" />
     <ClInclude Include="Territory.h" />
     <ClInclude Include="Unit.h" />
     <ClInclude Include="Util.h" />
@@ -150,6 +155,11 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="StateMenu.cpp" />
     <ClCompile Include="StatePhase1.cpp" />
+    <ClCompile Include="StatePhase2.cpp" />
+    <ClCompile Include="StatePhase3.cpp" />
+    <ClCompile Include="StatePhase4.cpp" />
+    <ClCompile Include="StatePhase5.cpp" />
+    <ClCompile Include="StatePhase6.cpp" />
     <ClCompile Include="Territory.cpp" />
     <ClCompile Include="Unit.cpp" />
   </ItemGroup>

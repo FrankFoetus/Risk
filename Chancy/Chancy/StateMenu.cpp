@@ -42,10 +42,18 @@ void StateMenu::processInput(float* cameraSpeed, float* scaleSpeed, GameState& g
 			break;
 		}
 
-		// process left mouse click
+		// process return click
 		if (inputManager_->isKeyPressed(SDLK_RETURN)) {
+			// go to the next phase
 			gameState = GameState::PHASE1;
 			std::cout << "ENTERING PHASE 1" << std::endl;
+		}
+
+		// process escape click
+		if (inputManager_->isKeyPressed(SDLK_ESCAPE)) {
+			// exit the game
+			gameState = GameState::EXIT;
+			std::cout << "EXETING GAME" << std::endl;
 		}
 	}
 }
@@ -98,7 +106,8 @@ void StateMenu::drawGame() {
 
 	// draw the hud
 	drawHud("This is the menu", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
-	drawHud("Start", glm::vec2(-100, 0), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud("Press return to start a new round!", glm::vec2(-550, 0), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud("Press escape to exit the game!", glm::vec2(-480, -100), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
 
 	// disable the shader
 	colorProgram_->unuse();
