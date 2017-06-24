@@ -32,6 +32,7 @@ public:
 	std::vector<Unit*> getUnitsT1() { return unitsT1_; }
 	std::vector<Unit*> getUnitsT2() { return unitsT2_; }
 	std::vector<Unit*> getUnitsT3() { return unitsT3_; }
+	int getUnitCount() { return unitCount_; }
 
 	void setPosition(glm::vec4 position) { position_ = position; }
 	void setUV(glm::vec4 uv) { uv_ = uv; }
@@ -43,6 +44,7 @@ public:
 	void setUnitsT1(std::vector<Unit*> unitsT1) { unitsT1_ = unitsT1; }
 	void setUnitsT2(std::vector<Unit*> unitsT2) { unitsT2_ = unitsT2; }
 	void setUnitsT3(std::vector<Unit*> unitsT3) { unitsT3_ = unitsT3; }
+	void setUnitCount(int count) { unitCount_ = count; }
 
 	void addUnit(Bengine::AudioEngine* audioEngine);
 	void destroyUnit(Bengine::AudioEngine* audioEngine);
@@ -69,5 +71,6 @@ private:
 	std::vector<Unit*> unitsT1_;
 	std::vector<Unit*> unitsT2_;
 	std::vector<Unit*> unitsT3_;
+	int unitCount_ = 0;
 };
 

@@ -14,14 +14,18 @@ StatePhase1::~StatePhase1()
 
 
 void StatePhase1::enterState(Player* currentPlayer) {
-	// set the current Player
-	currentPlayer_ = currentPlayer;
-	// light down all territories
-	for (auto terr : territories_) {
-		terr->lightUpTerritory();
+	if (!enteredState_) {
+		// set the current Player
+		currentPlayer_ = currentPlayer;
+		// light up all territories
+		for (auto terr : territories_) {
+			terr->lightUpTerritory();
+		}
+		// get the number of reinforcements
+		numberOfReinforcements_ = calculateReinforcements();
+		// dont enter state again before next round
+		enteredState_ = true;
 	}
-	// get the number of reinforcements
-	numberOfReinforcements_ = calculateReinforcements();
 }
 
 
@@ -105,9 +109,22 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 
 	// process return click
 	if (inputManager_->isKeyPressed(SDLK_RETURN)) {
-		// go to the next phase
-		gameState = GameState::PHASE2;
-		std::cout << "ENTERING PHASE 2" << std::endl;
+		// check if all troops have been placed
+		if (numberOfReinforcements_ == 0) {
+			// go to the next phase
+			gameState = GameState::PHASE2;
+			std::cout << "ENTERING PHASE 2" << std::endl;
+			// update territories
+			for (auto territory : territories_) {
+				territory->setUnitCount(territory->getUnitsT1().size() + territory->getUnitsT2().size() * 5 + territory->getUnitsT3().size() * 25);
+			}
+			// make state enterable again
+			enteredState_ = false;
+		}
+		else {
+			std::cout << "Not all reinforcements have been placed!" << std::endl;
+			// TODO: add sound to indicate remaining troops
+		}
 	}
 
 	// process left mouse click
@@ -115,7 +132,15 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		// check if territory was hit by click
 		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
 		if (territory != NULL) {
-			territory->addUnit(audioEngine_);
+			// check if reinforcements are left
+			if (numberOfReinforcements_ > 0) {
+				territory->addUnit(audioEngine_);
+				// decrement the number of troops that can be placed
+				numberOfReinforcements_--;
+			}
+			else {
+				std::cout << "No more reinforcements left!" << std::endl;
+			}
 		}
 	}
 
@@ -124,7 +149,12 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		// check if territory was hit by click
 		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
 		if (territory != NULL) {
-			territory->destroyUnit(audioEngine_);
+			// only if units have been placed in this phase, they can be removed
+			if (territory->getUnitsT1().size() + territory->getUnitsT2().size() * 5 + territory->getUnitsT3().size() * 25 > territory->getUnitCount()) {
+				territory->destroyUnit(audioEngine_);
+				// increment number of troops that can be placed
+				numberOfReinforcements_++;
+			}
 		}
 	}
 }
@@ -175,9 +205,8 @@ void StatePhase1::drawGame() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// draw the hud
-	int numberOfReinforcements = 5;
-	drawHud("Phase 1: Place your reinforcements! " + std::to_string(numberOfReinforcements) + " left.", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
-
+	drawHud("Phase 1: Place your reinforcements! ", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud(std::to_string(numberOfReinforcements_) + " left.", glm::vec2(-700, 260), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
 	// disable the shader
 	colorProgram_->unuse();
 
@@ -193,6 +222,12 @@ int StatePhase1::calculateReinforcements() {
 		if (territory->getOwner() == currentPlayer_) {
 			numberOfReinforcements++;
 		}
+	}
+	// one troop for every three territories
+	numberOfReinforcements /= 3;
+	// at least 3 troops for territories
+	if (numberOfReinforcements < 3) { 
+		numberOfReinforcements = 3; 
 	}
 	// add continental boni
 	for (auto continent : continents_) {

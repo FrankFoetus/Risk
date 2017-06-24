@@ -51,8 +51,9 @@ void MainGame::initSys() {
 	// initialize the spriteFont
 	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 32);
 
-	// initialize Player
+	// initialize Players
 	players_.push_back(new Player());
+	// initialize level
 	initLevel();
 	// initialize states
 	stateMenu_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_, 

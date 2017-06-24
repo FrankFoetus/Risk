@@ -12,6 +12,15 @@ StateMenu::~StateMenu()
 }
 
 
+void StateMenu::enterState(Player* currentPlayer) {
+	// set the current Player
+	currentPlayer_ = currentPlayer;
+	// light down all territories
+	for (auto terr : territories_) {
+		terr->lightDownTerritory();
+	}
+}
+
 
 void StateMenu::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
 
