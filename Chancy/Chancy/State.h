@@ -26,14 +26,15 @@ public:
 		Bengine::GLSLProgram* colorProgram, Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, 
 		Bengine::Window* window, const GLuint windowWidth, const GLuint windowHeight);
 
-	//virtual void enterState(Player* currentPlayer) = 0;
+	virtual void enterState(Player* currentPlayer);
 	virtual void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) = 0;
 
 protected:
 	void drawHud(std::string text, glm::vec2 pos, glm::vec2 size, Bengine::ColorRGBA8 color);
+	virtual void leaveState(GameState& gameState);
 	Territory* checkDistanceToTerritory(glm::vec2 mousePos);
 
-	bool enteredState_;
+	bool enteredState_ = false;
 	float windowWidth_;
 	float windowHeight_;
 	Bengine::SpriteFont* spriteFont_;

@@ -25,7 +25,7 @@ public:
 	void setTrunOrder(int turnOrder) { turnOrder_ = turnOrder; }
 	void setEnergy(int energy) { energy_ = energy; }
 	void setColor(Bengine::ColorRGBA8 color) { color_ = color; }
-
+	
 
 private:
 	std::string name_;

@@ -24,7 +24,7 @@ void MainGame::run() {
 	initSys();
 
 	Bengine::Music music = audioEngine_.loadMusic("Sounds/Siste Viator.ogg");
-	music.play(-1);
+	//music.play(-1);
 
 	gameLoop();
 }
@@ -107,6 +107,7 @@ void MainGame::gameLoop() {
 		case GameState::MENU:
 
 			inputManager_.update();
+			stateMenu_->enterState(players_[0]);
 			stateMenu_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			stateMenu_->drawGame();
 			break;
@@ -120,30 +121,35 @@ void MainGame::gameLoop() {
 		case GameState::PHASE2:
 
 			inputManager_.update();
+			statePhase2_->enterState(players_[0]);
 			statePhase2_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase2_->drawGame();
 			break;
 		case GameState::PHASE3:
 
 			inputManager_.update();
+			statePhase3_->enterState(players_[0]);
 			statePhase3_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase3_->drawGame();
 			break;
 		case GameState::PHASE4:
 
 			inputManager_.update();
+			statePhase4_->enterState(players_[0]);
 			statePhase4_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase4_->drawGame();
 			break;
 		case GameState::PHASE5:
 
 			inputManager_.update();
+			statePhase5_->enterState(players_[0]);
 			statePhase5_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase5_->drawGame();
 			break;
 		case GameState::PHASE6:
 
 			inputManager_.update();
+			statePhase6_->enterState(players_[0]);
 			statePhase6_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase6_->drawGame();
 			break;

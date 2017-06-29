@@ -94,6 +94,7 @@ void StatePhase2::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		// go to the next phase
 		gameState = GameState::PHASE3;
 		std::cout << "ENTERING PHASE 3" << std::endl;
+		leaveState(gameState);
 	}
 
 	// process left mouse click

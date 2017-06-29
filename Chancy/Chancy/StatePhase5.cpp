@@ -12,6 +12,21 @@ StatePhase5::~StatePhase5()
 }
 
 
+void StatePhase5::enterState(Player* currentPlayer) {
+	if (!enteredState_) {
+		std::cout << "ENTERING STATE 5" << std::endl;
+		// set the current Player
+		currentPlayer_ = currentPlayer;
+		// light down all territories
+		for (auto terr : territories_) {
+			terr->lightDownTerritory();
+		}
+		// dont enter state again before next round
+		enteredState_ = true;
+	}
+}
+
+
 void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
 
 	SDL_Event evt;
@@ -92,9 +107,8 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 
 	// process return click
 	if (inputManager_->isKeyPressed(SDLK_RETURN)) {
-		// go to the next phase
-		gameState = GameState::PHASE6;
-		std::cout << "ENTERING PHASE 6" << std::endl;
+		// leave the state
+		leaveState(gameState);
 	}
 
 	// process left mouse click
@@ -102,7 +116,21 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		// check if territory was hit by click
 		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
 		if (territory != NULL) {
-			territory->lightUpTerritory();
+			// if territory was not lid up, light it and its neighbours up and all other territories down 
+			if (territory->getColor().a < 255) {
+				// light down all territories
+				for (auto terr : territories_) {
+					terr->lightDownTerritory();
+				}
+				// light up selected territory and its neighbours
+				territory->lightUpTerritory();
+				for (auto terr : getNeighbours(territory)) {
+					terr->lightUpTerritory();
+				}
+			}
+			else {
+				territory->lightDownTerritory();
+			}
 		}
 	}
 }
@@ -162,4 +190,28 @@ void StatePhase5::drawGame() {
 
 	// setup our buffer and draw everything to the screen
 	window_->swapBuffer();
+}
+
+
+std::vector<Territory*> StatePhase5::getNeighbours(Territory* territory) {
+	std::vector<Territory*> neighbours;
+	for (auto terr : territories_) {
+		// calculate the distance between the two territories
+		float distance = (terr->getPosition().x - territory->getPosition().x) * (terr->getPosition().x - territory->getPosition().x) +
+						(terr->getPosition().y - territory->getPosition().y) * (terr->getPosition().y - territory->getPosition().y);
+		// if the distance is small enough, add the terr to neighbours
+		if (distance < 1.5*territory->getPosition().w) {
+			neighbours.push_back(terr);
+		}
+	}
+	return neighbours;
+}
+
+
+void StatePhase5::leaveState(GameState& gameState) {
+	// go to the next phase
+	gameState = GameState::PHASE6;
+	std::cout << "ENTERING PHASE 6" << std::endl;
+	// make state enterable again
+	enteredState_ = false;
 }

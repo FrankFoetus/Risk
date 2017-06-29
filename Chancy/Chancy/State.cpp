@@ -25,12 +25,30 @@ void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2
 	spriteFont_ = spriteFont;
 	territoryBatch_ = territoryBatch;
 	hudSpritebatch_ = hudSpriteBatch;
+	enteredState_ = false;
 
 	territories_ = level->getTerritories();
 	for (auto it : territories_) {
 		std::cout << it->getName() << std::endl;
 	}
 }
+
+
+void State::enterState(Player* currentPlayer) {
+
+	if (!enteredState_) {
+		// set the current Player
+		currentPlayer_ = currentPlayer;
+		// dont enter state again before next round
+		enteredState_ = true;
+	}
+}
+
+
+void State::leaveState(GameState& gameState) {
+	enteredState_ = false;
+}
+
 
 void State::drawHud(std::string text, glm::vec2 pos, glm::vec2 size, Bengine::ColorRGBA8 color) {
 	// set the camera matrix

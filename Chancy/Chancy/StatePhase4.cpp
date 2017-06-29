@@ -95,6 +95,7 @@ void StatePhase4::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		// go to the next phase
 		gameState = GameState::PHASE5;
 		std::cout << "ENTERING PHASE 5" << std::endl;
+		leaveState(gameState);
 	}
 }
 

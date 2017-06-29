@@ -109,22 +109,8 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 
 	// process return click
 	if (inputManager_->isKeyPressed(SDLK_RETURN)) {
-		// check if all troops have been placed
-		if (numberOfReinforcements_ == 0) {
-			// go to the next phase
-			gameState = GameState::PHASE2;
-			std::cout << "ENTERING PHASE 2" << std::endl;
-			// update territories
-			for (auto territory : territories_) {
-				territory->setUnitCount(territory->getUnitsT1().size() + territory->getUnitsT2().size() * 5 + territory->getUnitsT3().size() * 25);
-			}
-			// make state enterable again
-			enteredState_ = false;
-		}
-		else {
-			std::cout << "Not all reinforcements have been placed!" << std::endl;
-			// TODO: add sound to indicate remaining troops
-		}
+		// leave the state
+		leaveState(gameState);
 	}
 
 	// process left mouse click
@@ -236,4 +222,24 @@ int StatePhase1::calculateReinforcements() {
 		}
 	}
 	return numberOfReinforcements;
+}
+
+
+void StatePhase1::leaveState(GameState& gameState) {
+	// check if all troops have been placed
+	if (numberOfReinforcements_ == 0) {
+		// go to the next phase
+		gameState = GameState::PHASE2;
+		std::cout << "ENTERING PHASE 2" << std::endl;
+		// update territories
+		for (auto territory : territories_) {
+			territory->setUnitCount(territory->getUnitsT1().size() + territory->getUnitsT2().size() * 5 + territory->getUnitsT3().size() * 25);
+		}
+		// make state enterable again
+		enteredState_ = false;
+	}
+	else {
+		std::cout << "Not all reinforcements have been placed!" << std::endl;
+		// TODO: add sound to indicate remaining troops
+	}
 }
