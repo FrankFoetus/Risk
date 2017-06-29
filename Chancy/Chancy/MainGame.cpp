@@ -13,10 +13,29 @@ MainGame::MainGame()
 
 
 MainGame::~MainGame()
-{
-	for (GLuint i = 0; i < levels_.size(); i++) {
-		delete levels_[i];
+{	
+	for (auto level : levels_) {
+		delete level;
 	}
+	levels_.clear();
+	/*
+	for (auto territory : territories_) {
+		if (territory != nullptr) {
+			delete territory;
+		}
+	}*/
+	territories_.clear();
+	for (auto player : players_) {
+		delete player;
+	}
+	players_.clear();
+	delete stateMenu_;
+	delete statePhase1_;
+	delete statePhase2_;
+	delete statePhase3_;
+	delete statePhase4_;
+	delete statePhase5_;
+	delete statePhase6_;
 }
 
 
@@ -57,19 +76,19 @@ void MainGame::initSys() {
 	initLevel();
 	// initialize states
 	stateMenu_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_, 
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
 	statePhase1_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
 	statePhase2_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
 	statePhase3_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
 	statePhase4_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
 	statePhase5_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
 	statePhase6_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
 }
 
 
@@ -107,49 +126,49 @@ void MainGame::gameLoop() {
 		case GameState::MENU:
 
 			inputManager_.update();
-			stateMenu_->enterState(players_[0]);
+			stateMenu_->enterState(currentPlayer_);
 			stateMenu_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			stateMenu_->drawGame();
 			break;
 		case GameState::PHASE1:
 
 			inputManager_.update();
-			statePhase1_->enterState(players_[0]);
+			statePhase1_->enterState(currentPlayer_);
 			statePhase1_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase1_->drawGame();
 			break;
 		case GameState::PHASE2:
 
 			inputManager_.update();
-			statePhase2_->enterState(players_[0]);
+			statePhase2_->enterState(currentPlayer_);
 			statePhase2_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase2_->drawGame();
 			break;
 		case GameState::PHASE3:
 
 			inputManager_.update();
-			statePhase3_->enterState(players_[0]);
+			statePhase3_->enterState(currentPlayer_);
 			statePhase3_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase3_->drawGame();
 			break;
 		case GameState::PHASE4:
 
 			inputManager_.update();
-			statePhase4_->enterState(players_[0]);
+			statePhase4_->enterState(currentPlayer_);
 			statePhase4_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase4_->drawGame();
 			break;
 		case GameState::PHASE5:
 
 			inputManager_.update();
-			statePhase5_->enterState(players_[0]);
+			statePhase5_->enterState(currentPlayer_);
 			statePhase5_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase5_->drawGame();
 			break;
 		case GameState::PHASE6:
 
 			inputManager_.update();
-			statePhase6_->enterState(players_[0]);
+			statePhase6_->enterState(currentPlayer_);
 			statePhase6_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase6_->drawGame();
 			break;

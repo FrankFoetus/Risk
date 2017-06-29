@@ -13,10 +13,10 @@ StatePhase1::~StatePhase1()
 }
 
 
-void StatePhase1::enterState(Player* currentPlayer) {
+void StatePhase1::enterState(int currentPlayer) {
 	if (!enteredState_) {
 		// set the current Player
-		currentPlayer_ = currentPlayer;
+		currentPlayer_ = players_[currentPlayer];
 		// light up all territories
 		for (auto terr : territories_) {
 			terr->lightUpTerritory();
@@ -100,29 +100,38 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		}
 	}
 
-	// process escape push
+	// ESCAPE
 	if (inputManager_->isKeyPressed(SDLK_ESCAPE)) {
 		// go into menu
 		gameState = GameState::MENU;
 		std::cout << "ENTERING MENU" << std::endl;
 	}
 
-	// process return click
+	// RETURN
 	if (inputManager_->isKeyPressed(SDLK_RETURN)) {
 		// leave the state
 		leaveState(gameState);
 	}
 
-	// process left mouse click
+	// LEFT MOUSE CLICK
 	if (inputManager_->isKeyPressed(SDL_BUTTON_LEFT)) {
 		// check if territory was hit by click
 		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
 		if (territory != NULL) {
 			// check if reinforcements are left
 			if (numberOfReinforcements_ > 0) {
-				territory->addUnit(audioEngine_);
-				// decrement the number of troops that can be placed
-				numberOfReinforcements_--;
+				if (territory->getOwner() == currentPlayer_ || territory->getOwner() == NULL) {
+					// if selected territory is empty, the player gets it
+					if (territory->getOwner() == NULL) {
+						territory->setOwner(currentPlayer_);
+					}
+					territory->addUnit(audioEngine_);
+					// decrement the number of troops that can be placed
+					numberOfReinforcements_--;
+				}
+				else {
+					std::cout << "This territory belongs to another player!" << std::endl;
+				}
 			}
 			else {
 				std::cout << "No more reinforcements left!" << std::endl;
@@ -130,7 +139,7 @@ void StatePhase1::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		}
 	}
 
-	// process right mouse click
+	// RIGHT MOUSE CLICK
 	if (inputManager_->isKeyPressed(SDL_BUTTON_RIGHT)) {
 		// check if territory was hit by click
 		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));

@@ -51,6 +51,8 @@ public:
 	void lightUpTerritory();
 	void lightDownTerritory();
 
+	void resetColor() { color_ = origColor_; }
+
 	void update();
 	void draw(Bengine::SpriteBatch* territoryBatch);
 
@@ -64,6 +66,7 @@ private:
 	glm::vec4 position_;
 	glm::vec4 uv_;
 	Bengine::ColorRGBA8 color_;
+	Bengine::ColorRGBA8 origColor_;
 	GLuint textureID_;
 
 	Continent* continent_ = nullptr;

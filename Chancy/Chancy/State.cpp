@@ -12,7 +12,8 @@ State::~State()
 }
 
 void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2D, Bengine::Camera2D* hudCamera2D, Bengine::AudioEngine* audioEngine, Level* level, Bengine::GLSLProgram* colorProgram,
-	Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, Bengine::Window* window, const GLuint windowWidth, const GLuint windowHeight) {
+	Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, Bengine::Window* window, const GLuint windowWidth, const GLuint windowHeight,
+	std::vector<Player*> players) {
 	inputManager_ = inputManager;
 	camera2D_ = camera2D;
 	hudCamera2D_ = hudCamera2D;
@@ -25,7 +26,7 @@ void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2
 	spriteFont_ = spriteFont;
 	territoryBatch_ = territoryBatch;
 	hudSpritebatch_ = hudSpriteBatch;
-	enteredState_ = false;
+	players_ = players;
 
 	territories_ = level->getTerritories();
 	for (auto it : territories_) {
@@ -34,11 +35,11 @@ void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2
 }
 
 
-void State::enterState(Player* currentPlayer) {
+void State::enterState(int currentPlayer) {
 
 	if (!enteredState_) {
 		// set the current Player
-		currentPlayer_ = currentPlayer;
+		currentPlayer_ = players_[currentPlayer];
 		// dont enter state again before next round
 		enteredState_ = true;
 	}
@@ -86,4 +87,3 @@ Territory* State::checkDistanceToTerritory(glm::vec2 mousePos) {
 	}
 	return nullptr;
 }
-

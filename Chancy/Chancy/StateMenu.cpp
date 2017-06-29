@@ -12,9 +12,9 @@ StateMenu::~StateMenu()
 }
 
 
-void StateMenu::enterState(Player* currentPlayer) {
+void StateMenu::enterState(int currentPlayer) {
 	// set the current Player
-	currentPlayer_ = currentPlayer;
+	currentPlayer_ = players_[currentPlayer];
 	// light down all territories
 	for (auto terr : territories_) {
 		terr->lightDownTerritory();
@@ -51,14 +51,15 @@ void StateMenu::processInput(float* cameraSpeed, float* scaleSpeed, GameState& g
 			break;
 		}
 
-		// process return click
+		// RETURN
 		if (inputManager_->isKeyPressed(SDLK_RETURN)) {
 			// go to the next phase
 			gameState = GameState::PHASE1;
 			std::cout << "ENTERING PHASE 1" << std::endl;
+			leaveState(gameState);
 		}
 
-		// process escape click
+		// ESCAPE
 		if (inputManager_->isKeyPressed(SDLK_ESCAPE)) {
 			// exit the game
 			gameState = GameState::EXIT;

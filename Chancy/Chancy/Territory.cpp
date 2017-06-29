@@ -5,6 +5,7 @@
 Territory::Territory(std::string name, glm::vec4 position, glm::vec4 uv, GLuint textureID, Bengine::ColorRGBA8 color) :
 		name_(name), position_(position), uv_(uv), textureID_(textureID), color_(color)
 {
+	origColor_ = color;
 }
 
 
@@ -172,7 +173,7 @@ void Territory::unitTransformation(Bengine::AudioEngine* audioEngine, int Tx, in
 				position_.y, position_.z / 4, position_.w / 3),
 				uv_,
 				Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Mushroom1.png").id,
-				Bengine::ColorRGBA8(255, 255, 255, 150),
+				Bengine::ColorRGBA8(255, 255, 255, 255),
 				audioEngine->loadSoundEffect("Sounds/slimy_monster1.mp3")));
 		}
 		break;
@@ -184,7 +185,7 @@ void Territory::unitTransformation(Bengine::AudioEngine* audioEngine, int Tx, in
 				position_.y + position_.w / 3, position_.z / 4, position_.w / 3),
 				uv_,
 				Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Broccoli1.png").id,
-				Bengine::ColorRGBA8(255, 255, 255, 150),
+				Bengine::ColorRGBA8(255, 255, 255, 255),
 				audioEngine->loadSoundEffect("Sounds/slimy_monster2.mp3")));
 		}
 		// if one T3 unit is to be transformed into four T2 and four T1 units
@@ -195,14 +196,14 @@ void Territory::unitTransformation(Bengine::AudioEngine* audioEngine, int Tx, in
 					position_.y + position_.w / 3, position_.z / 4, position_.w / 3),
 					uv_,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Broccoli1.png").id,
-					Bengine::ColorRGBA8(255, 255, 255, 150),
+					Bengine::ColorRGBA8(255, 255, 255, 255),
 					audioEngine->loadSoundEffect("Sounds/slimy_monster2.mp3")));
 				// add a new T3 unit to the unitsT3 vector
 				unitsT1_.emplace_back(new Unit(glm::vec4(position_.x + unitsT1_.size() * position_.z / 4,
 					position_.y, position_.z / 4, position_.w / 3),
 					uv_,
 					Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Mushroom1.png").id,
-					Bengine::ColorRGBA8(255, 255, 255, 150),
+					Bengine::ColorRGBA8(255, 255, 255, 255),
 					audioEngine->loadSoundEffect("Sounds/slimy_monster1.mp3")));
 			}
 		}
@@ -214,7 +215,7 @@ void Territory::unitTransformation(Bengine::AudioEngine* audioEngine, int Tx, in
 			position_.y + position_.w * 2 / 3, position_.z / 4, position_.w / 3),
 			uv_,
 			Bengine::RessourceManager::getTexture("Textures/jimmyJump_pack/PNG/Enemys/Enemy_Candy1.png").id,
-			Bengine::ColorRGBA8(255, 255, 255, 150),
+			Bengine::ColorRGBA8(255, 255, 255, 255),
 			audioEngine->loadSoundEffect("Sounds/slimy_monster.mp3")));
 		break;
 	default:

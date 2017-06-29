@@ -24,13 +24,14 @@ public:
 
 	void init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2D, Bengine::Camera2D* hudCamera, Bengine::AudioEngine* audioEngine, Level* level, 
 		Bengine::GLSLProgram* colorProgram, Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, 
-		Bengine::Window* window, const GLuint windowWidth, const GLuint windowHeight);
+		Bengine::Window* window, const GLuint windowWidth, const GLuint windowHeight, std::vector<Player*> players);
 
-	virtual void enterState(Player* currentPlayer);
+	virtual void enterState(int currentPlayer);
 	virtual void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) = 0;
 
 protected:
 	void drawHud(std::string text, glm::vec2 pos, glm::vec2 size, Bengine::ColorRGBA8 color);
+	
 	virtual void leaveState(GameState& gameState);
 	Territory* checkDistanceToTerritory(glm::vec2 mousePos);
 
@@ -50,6 +51,7 @@ protected:
 
 	std::vector<Continent*> continents_; /// vector of continents
 	std::vector<Territory*> territories_; /// vector of territories
+	std::vector<Player*> players_; /// vector of players
 
 	Bengine::SpriteBatch* hudSpritebatch_;
 	Bengine::SpriteBatch* territoryBatch_;

@@ -52,10 +52,10 @@ private:
 	std::vector<Level*> levels_; /// vector of levels
 	int currentLevel_;
 
-	std::vector<Player*> players_;
-	int currentPlayer_;
+	std::vector<Player*> players_; /// vector of players
+	int currentPlayer_ = 0;
 
-	std::vector<Territory*> territories_;
+	std::vector<Territory*> territories_; /// vector of territories
 
 	Bengine::Window window_;
 	Bengine::InputManager inputManager_;
