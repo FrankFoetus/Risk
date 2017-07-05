@@ -126,6 +126,7 @@
   <ItemGroup>
     <ClInclude Include="Card.h" />
     <ClInclude Include="Continent.h" />
+    <ClInclude Include="Dice.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Player.h" />
@@ -148,6 +149,7 @@
   <ItemGroup>
     <ClCompile Include="Card.cpp" />
     <ClCompile Include="Continent.cpp" />
+    <ClCompile Include="Dice.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGame.cpp" />

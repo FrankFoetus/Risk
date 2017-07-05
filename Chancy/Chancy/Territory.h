@@ -44,7 +44,7 @@ public:
 	void setUnitsT1(std::vector<Unit*> unitsT1) { unitsT1_ = unitsT1; }
 	void setUnitsT2(std::vector<Unit*> unitsT2) { unitsT2_ = unitsT2; }
 	void setUnitsT3(std::vector<Unit*> unitsT3) { unitsT3_ = unitsT3; }
-	void setUnitCount(int count) { unitCount_ = count; }
+	void updateUnitCount() { unitCount_ = unitsT1_.size() + unitsT2_.size() * 5 + unitsT3_.size() * 25; }
 
 	void addUnit(Bengine::AudioEngine* audioEngine);
 	void destroyUnit(Bengine::AudioEngine* audioEngine);

@@ -11,9 +11,9 @@ State::~State()
 {
 }
 
-void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2D, Bengine::Camera2D* hudCamera2D, Bengine::AudioEngine* audioEngine, Level* level, Bengine::GLSLProgram* colorProgram,
-	Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, Bengine::Window* window, const GLuint windowWidth, const GLuint windowHeight,
-	std::vector<Player*> players) {
+void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2D, Bengine::Camera2D* hudCamera2D, Bengine::AudioEngine* audioEngine, Level* level, 
+	Bengine::GLSLProgram* colorProgram, Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, 
+	Bengine::Window* window, Dice* attackerDice, Dice* defenderDice, const GLuint windowWidth, const GLuint windowHeight, std::vector<Player*> players) {
 	inputManager_ = inputManager;
 	camera2D_ = camera2D;
 	hudCamera2D_ = hudCamera2D;
@@ -27,11 +27,15 @@ void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2
 	territoryBatch_ = territoryBatch;
 	hudSpritebatch_ = hudSpriteBatch;
 	players_ = players;
+	attackerDice_ = attackerDice;
+	defenderDice_ = defenderDice;
 
 	territories_ = level->getTerritories();
+	/* debug output the territory names
 	for (auto it : territories_) {
 		std::cout << it->getName() << std::endl;
 	}
+	*/
 }
 
 
@@ -51,9 +55,16 @@ void State::leaveState(GameState& gameState) {
 }
 
 
-void State::drawHud(std::string text, glm::vec2 pos, glm::vec2 size, Bengine::ColorRGBA8 color) {
+void State::drawHud(std::string text, glm::vec2 pos, glm::vec2 size, Bengine::ColorRGBA8 color, bool stationary) {
 	// set the camera matrix
-	glm::mat4 cameraMatrix = hudCamera2D_->getCameraMatrix();
+	glm::mat4 cameraMatrix;
+	if (stationary) {
+		cameraMatrix = hudCamera2D_->getCameraMatrix();
+	}
+	else
+	{
+		cameraMatrix = camera2D_->getCameraMatrix();
+	}
 	GLint pLocation = colorProgram_->getUniformLocation("P");
 	// upload matrix to the gpu
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));

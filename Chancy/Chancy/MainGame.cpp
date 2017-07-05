@@ -18,12 +18,6 @@ MainGame::~MainGame()
 		delete level;
 	}
 	levels_.clear();
-	/*
-	for (auto territory : territories_) {
-		if (territory != nullptr) {
-			delete territory;
-		}
-	}*/
 	territories_.clear();
 	for (auto player : players_) {
 		delete player;
@@ -74,21 +68,24 @@ void MainGame::initSys() {
 	players_.push_back(new Player());
 	// initialize level
 	initLevel();
+	// initialize 3 attacker dice and 2 defender dice
+	attackerDice_ = new Dice(3, glm::vec2(windowWidth_ - 3 * dieSize - 30, windowHeight_ - 10), dieSize);
+	defenderDice_ = new Dice(2, glm::vec2(windowWidth_ - 2 * dieSize - 15, windowHeight_ - 20 - dieSize), dieSize);
 	// initialize states
 	stateMenu_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_, 
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
 	statePhase1_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
 	statePhase2_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
 	statePhase3_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
 	statePhase4_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
 	statePhase5_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
 	statePhase6_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
 }
 
 
@@ -105,7 +102,8 @@ void MainGame::initLevel() {
 
 	levels_.push_back(new Level("Levels/Level1.txt", windowHeight_, windowWidth_));
 	currentLevel_ = 0;
-	territories_ = levels_[0]->getTerritories();
+	territories_ = levels_[currentLevel_]->getTerritories();
+
 }
 
 

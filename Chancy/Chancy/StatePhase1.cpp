@@ -200,8 +200,8 @@ void StatePhase1::drawGame() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// draw the hud
-	drawHud("Phase 1: Place your reinforcements! ", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
-	drawHud(std::to_string(numberOfReinforcements_) + " left.", glm::vec2(-700, 260), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud("Phase 1: Place your reinforcements! ", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud(std::to_string(numberOfReinforcements_) + " left.", glm::vec2(-700, 260), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
 	// disable the shader
 	colorProgram_->unuse();
 
@@ -242,7 +242,7 @@ void StatePhase1::leaveState(GameState& gameState) {
 		std::cout << "ENTERING PHASE 2" << std::endl;
 		// update territories
 		for (auto territory : territories_) {
-			territory->setUnitCount(territory->getUnitsT1().size() + territory->getUnitsT2().size() * 5 + territory->getUnitsT3().size() * 25);
+			territory->updateUnitCount();
 		}
 		// make state enterable again
 		enteredState_ = false;

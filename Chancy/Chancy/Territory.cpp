@@ -225,5 +225,4 @@ void Territory::unitTransformation(Bengine::AudioEngine* audioEngine, int Tx, in
 
 
 void Territory::update() {
-
 }

@@ -147,7 +147,7 @@ void StatePhase3::drawGame() {
 
 	// draw the hud
 	int numberOfReinforcements = 5;
-	drawHud("Phase 3: Buy cards!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud("Phase 3: Buy cards!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
 
 	// disable the shader
 	colorProgram_->unuse();

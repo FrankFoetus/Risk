@@ -2,6 +2,7 @@
 
 #include "State.h"
 
+
 class StatePhase5 : public State
 {
 public:
@@ -15,8 +16,11 @@ public:
 private:
 	virtual void leaveState(GameState& gameState);
 	std::vector<Territory*> getNeighbours(Territory* territory);
+	int* calculateWinners();
 
-	Territory* attackerTerritory_;
-	Territory* defenderTerritory_;
+	Territory* attackerTerritory_ = nullptr;
+	Territory* defenderTerritory_ = nullptr;
+	int attackingUnits_ = 0;
+	int defendingUnits_ = 0;
 };
 

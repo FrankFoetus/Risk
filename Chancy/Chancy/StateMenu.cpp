@@ -115,9 +115,9 @@ void StateMenu::drawGame() {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// draw the hud
-	drawHud("This is the menu", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
-	drawHud("Press return to start a new round!", glm::vec2(-550, 0), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
-	drawHud("Press escape to exit the game!", glm::vec2(-480, -100), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	drawHud("This is the menu", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud("Press return to start a new round!", glm::vec2(-550, 0), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud("Press escape to exit the game!", glm::vec2(-480, -100), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
 
 	// disable the shader
 	colorProgram_->unuse();

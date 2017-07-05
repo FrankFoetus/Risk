@@ -27,6 +27,15 @@ void StatePhase5::enterState(int currentPlayer) {
 }
 
 
+void StatePhase5::leaveState(GameState& gameState) {
+	// go to the next phase
+	gameState = GameState::PHASE6;
+	std::cout << "ENTERING PHASE 6" << std::endl;
+	// make state enterable again
+	enteredState_ = false;
+}
+
+
 void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
 
 	SDL_Event evt;
@@ -98,90 +107,137 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 		}
 	}
 
-	// P
-	if (inputManager_->isKeyPressed(SDLK_p)) {
-		
-	}
+	// only process inputs if dice are inactive
+	if (!diceActivatited_) {
+		// P
+		if (inputManager_->isKeyPressed(SDLK_p)) {
 
-	// ESCAPE
-	if (inputManager_->isKeyPressed(SDLK_ESCAPE)) {
-		// go into menu
-		gameState = GameState::MENU;
-		std::cout << "ENTERING MENU" << std::endl;
-	}
+		}
 
-	// RETURN
-	if (inputManager_->isKeyPressed(SDLK_RETURN)) {
-		// leave the state
-		leaveState(gameState);
-	}
+		// ESCAPE
+		if (inputManager_->isKeyPressed(SDLK_ESCAPE)) {
+			// go into menu
+			gameState = GameState::MENU;
+			std::cout << "ENTERING MENU" << std::endl;
+		}
 
-	// LEFT MOUSE CLICK
-	if (inputManager_->isKeyPressed(SDL_BUTTON_LEFT)) {
-		// check if territory was hit by click
-		Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
-		if (territory != NULL) {
-			// if territory was not lid up, light it and its neighbours up and all other territories down 
-			if (territory->getColor().a < 255) {
-				if (territory->getOwner() == currentPlayer_) {
-					// CHANGING ATTACKER:
-					// light down all territories
-					for (auto terr : territories_) {
-						terr->lightDownTerritory();
-					}
-					if (attackerTerritory_ != nullptr) {
-						// reset color of attacker territory
-						attackerTerritory_->resetColor();
-					}
-					// mark the selected territory as the attacker
-					attackerTerritory_ = territory;
-					// adjust color of attacker territory
-					attackerTerritory_->setColor(Bengine::ColorRGBA8(0, 0, 0, 255));
-					// reset the defender
-					if (defenderTerritory_ != nullptr) {
-						defenderTerritory_->resetColor();
-						defenderTerritory_ = nullptr;
-					}
-
-					// light up attacker territory and its neighbours
-					attackerTerritory_->lightUpTerritory();
-					for (auto terr : getNeighbours(attackerTerritory_)) {
-						// only light up territories of other players that can be attacked
-						if (terr->getOwner() != currentPlayer_) {
-							terr->lightUpTerritory();
-						}
-					}
-				}
-				else {
-					std::cout << "This territory does not belong to You!" << std::endl;
+		// RETURN
+		if (inputManager_->isKeyPressed(SDLK_RETURN)) {
+			if (attackingUnits_ > 0) {
+				// process invasion
+				diceActivatited_ = true;
+			}
+			else {
+				if (leaveOK_) {
+					// leave the state
+					leaveState(gameState);
 				}
 			}
-			// if territory is already lid up
-			else {
-				if (territory == attackerTerritory_) {
-					// deselect the territory and its neighbours
-					for (auto territory : territories_) {
-						territory->lightDownTerritory();
+		}
+
+		// LEFT MOUSE CLICK
+		if (inputManager_->isKeyPressed(SDL_BUTTON_LEFT)) {
+			// check if territory was hit by click
+			Territory* territory = checkDistanceToTerritory(camera2D_->convertScreenToWorld(inputManager_->getMouseCoords()));
+			if (territory != NULL) {
+				// if territory was not lid up, light it and its neighbours up and all other territories down 
+				if (territory->getColor().a < 255) {
+					// make state not exitable
+					leaveOK_ = false;
+					if (territory->getOwner() == currentPlayer_) {
+						// CHANGING ATTACKER:
+						// light down all territories
+						for (auto terr : territories_) {
+							terr->lightDownTerritory();
+						}
+						if (attackerTerritory_ != nullptr) {
+							// reset color of attacker territory
+							attackerTerritory_->resetColor();
+						}
+						// mark the selected territory as the attacker
+						attackerTerritory_ = territory;
+						attackingUnits_ = 0;
+						// adjust color and size of attacker territory
+						attackerTerritory_->setColor(Bengine::ColorRGBA8(255, 255, 255, 255));
+						// reset the defender
+						if (defenderTerritory_ != nullptr) {
+							defenderTerritory_->resetColor();
+							defenderTerritory_ = nullptr;
+						}
+
+						// light up attacker territory and its neighbours
+						attackerTerritory_->lightUpTerritory();
+						for (auto terr : getNeighbours(attackerTerritory_)) {
+							// only light up territories of other players that can be attacked
+							if (terr->getOwner() != currentPlayer_) {
+								terr->lightUpTerritory();
+							}
+						}
 					}
-					// reset color of attacker and defender territories
-					attackerTerritory_->resetColor();
-					if (defenderTerritory_ != nullptr) {
-						defenderTerritory_->resetColor();
+					else {
+						std::cout << "This territory does not belong to You!" << std::endl;
 					}
-					// unmark the attacker and defender territory
-					attackerTerritory_ = nullptr;
-					defenderTerritory_ = nullptr;
 				}
+				// if territory is already lid up
 				else {
-					if (defenderTerritory_ != nullptr) {
-						// reset the color of the defender territorie
-						defenderTerritory_->resetColor();
+					if (territory == attackerTerritory_) {
+						// deselect the territory and its neighbours
+						for (auto territory : territories_) {
+							territory->lightDownTerritory();
+						}
+						// reset color of attacker and defender territories
+						attackerTerritory_->resetColor();
+						if (defenderTerritory_ != nullptr) {
+							defenderTerritory_->resetColor();
+						}
+						// unmark the attacker and defender territory
+						attackerTerritory_ = nullptr;
+						defenderTerritory_ = nullptr;
+						// make ready for going to next state
+						leaveOK_ = true;
 					}
-					// choose number of units to attack
-					defenderTerritory_ = territory;
-					// adjust color of defender territories
-					defenderTerritory_->setColor(Bengine::ColorRGBA8(0, 0, 0, 255));
+					// if selected territory is lid up and not the attacker territory
+					else {
+						if (defenderTerritory_ != nullptr) {
+							// reset the color of the defender territorie
+							defenderTerritory_->resetColor();
+							defenderTerritory_->lightUpTerritory();
+						}
+						// choose number of units to attack
+						defenderTerritory_ = territory;
+						attackingUnits_ = 0;
+						// adjust color of defender territories
+						defenderTerritory_->setColor(Bengine::ColorRGBA8(255, 255, 255, 255));
+						// set defending units count
+						defendingUnits_ = defenderTerritory_->getUnitCount();
+					}
 				}
+			}
+		}
+
+		// UP
+		if (inputManager_->isKeyPressed(SDLK_UP)) {
+			// if attacker and defender are chosen, count up troops to attack
+			if (attackerTerritory_ != nullptr && defenderTerritory_ != nullptr) {
+				// if shift is pushed add 5 or maximum units in territory
+				if (inputManager_->isKeyDown(SDLK_LSHIFT)) {
+					attackingUnits_ = std::min(attackingUnits_ + 5, attackerTerritory_->getUnitCount() - 1);
+				}
+				// if attacking units are less than units in attacking territory, increment
+				attackingUnits_ = std::min(attackingUnits_ + 1, attackerTerritory_->getUnitCount() - 1);
+			}
+		}
+
+		// DOWN
+		if (inputManager_->isKeyPressed(SDLK_DOWN)) {
+			// if attacker and defender are chosen, decrease troops to attack
+			if (attackerTerritory_ != nullptr && defenderTerritory_ != nullptr) {
+				// if shift is pushed substract 5 or set to 0
+				if (inputManager_->isKeyDown(SDLK_LSHIFT)) {
+					attackingUnits_ = std::max(attackingUnits_ - 5, 0);
+				}
+				// if attacking units are greater than 0, decrement
+				attackingUnits_ = std::max(attackingUnits_ - 1, 0);
 			}
 		}
 	}
@@ -214,10 +270,10 @@ void StatePhase5::drawGame() {
 	* glUniform1f(timeLocation, _time);
 	*/
 
+	// NON STATIONARY (ON THE SCREEN)
 	// set the camera matrix
 	GLint pLocation = colorProgram_->getUniformLocation("P");
 	glm::mat4 cameraMatrix = camera2D_->getCameraMatrix();
-
 	// upload matrix to the gpu
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
@@ -231,10 +287,101 @@ void StatePhase5::drawGame() {
 	// render the territories
 	territoryBatch_->renderBatch();
 
+	// STATIONARY (ON THE SCREEN)
+	// set the stationary camera matrix
+	cameraMatrix = hudCamera2D_->getCameraMatrix();
+	// upload matrix to the gpu
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+	territoryBatch_->begin();
+	// if activated draw the dice
+	if (diceActivatited_ > 0) {
+		if (waitTime_ < 180) { // wait 3 seconds (with 60 fps)
+			attackerDice_->draw(territoryBatch_);
+			defenderDice_->draw(territoryBatch_);
+			// dont wait when there are no defending units
+			if (defendingUnits_ == 0) {
+				waitTime_ = 180;
+			}
+			waitTime_++;
+		}
+		else {
+			waitTime_ = 0;
+			if (attackingUnits_ > 0 && defendingUnits_ > 0) {
+				// ATTACK!
+				// activate the correct number of dice for the attacker
+				for (int i = 0; i < std::max(attackerTerritory_->getUnitCount(), 3); i++) { attackerDice_->setActivation(true, i); }
+				// activate the correct number of dice for the defender
+				for (int i = 0; i < std::max(defenderTerritory_->getUnitCount(), 2); i++) { defenderDice_->setActivation(true, i); }
+				// roll the dice
+				attackerDice_->roll(std::max(attackingUnits_, 3));
+				defenderDice_->roll(std::min(defendingUnits_, 2));
+				// calculate winners
+				int* lossArr = calculateWinners();
+				// destroy lost attacking units
+				for (int ind = 0; ind < lossArr[0]; ind++) {
+					attackerTerritory_->destroyUnit(audioEngine_);
+				}
+				// destroy lost defending units
+				for (int ind = 0; ind < lossArr[1]; ind++) {
+					attackerTerritory_->destroyUnit(audioEngine_);
+				}
+			}
+			else {
+				if (attackingUnits_ > 0) {
+					// move into defending territory
+					// set new owner
+					defenderTerritory_->setOwner(currentPlayer_);
+					for (int i = 0; i < attackingUnits_--;) {
+						// add units to invaded territory
+						defenderTerritory_->addUnit(audioEngine_);
+						// substract units from attacking territory
+						attackerTerritory_->destroyUnit(audioEngine_);
+					}
+					// update the unit counts of territories
+					defenderTerritory_->updateUnitCount();
+					attackerTerritory_->updateUnitCount();
+				}
+				// deselect the attacker territory and its neighbours
+				for (auto territory : territories_) {
+					territory->lightDownTerritory();
+				}
+				// reset color of attacker and defender territories
+				attackerTerritory_->resetColor();
+				if (defenderTerritory_ != nullptr) {
+					defenderTerritory_->resetColor();
+				}
+				// unmark the attacker and defender territory
+				attackerTerritory_ = nullptr;
+				defenderTerritory_ = nullptr;
+				// deactivate the fight
+				diceActivatited_ = false;
+				// make ready for going to next state
+				leaveOK_ = true;
+			}
+		}
+	}
+	territoryBatch_->end();
+	territoryBatch_->renderBatch();
+
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	// draw the hud
-	drawHud("Phase 5: Invade territories!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255));
+	// draw the head line
+	drawHud("Phase 5: Invade territories!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	if (attackerTerritory_ != nullptr && defenderTerritory_ != nullptr) {
+		// draw the number of attacking units if attacker and defender are chosen
+		drawHud(("Attackers: " + std::to_string(attackingUnits_)),
+			glm::vec2(attackerTerritory_->getPosition().x + attackerTerritory_->getPosition().z * 0.8, attackerTerritory_->getPosition().y + attackerTerritory_->getPosition().w * 0.8),
+			glm::vec2(0.5),
+			Bengine::ColorRGBA8(255, 255, 255, 255),
+			false);
+		// draw the number of attacking units if attacker and defender are chosen
+		drawHud(("Defenders: " + std::to_string(defendingUnits_)),
+			glm::vec2(defenderTerritory_->getPosition().x + defenderTerritory_->getPosition().z * 0.8, defenderTerritory_->getPosition().y + defenderTerritory_->getPosition().w * 0.8),
+			glm::vec2(0.5),
+			Bengine::ColorRGBA8(255, 255, 255, 255),
+			false);
+	}
 
 	// disable the shader
 	colorProgram_->unuse();
@@ -259,10 +406,28 @@ std::vector<Territory*> StatePhase5::getNeighbours(Territory* territory) {
 }
 
 
-void StatePhase5::leaveState(GameState& gameState) {
-	// go to the next phase
-	gameState = GameState::PHASE6;
-	std::cout << "ENTERING PHASE 6" << std::endl;
-	// make state enterable again
-	enteredState_ = false;
+int* StatePhase5::calculateWinners() {
+	// position 0 in lossArr is attacker losses, position 1 is defender losses
+	int lossArr[2] = { 0,0 };
+	// sort the roll results
+	std::vector<int> attackResults = attackerDice_->getRoll();
+	std::sort(attackResults.begin(), attackResults.end());
+	std::reverse(attackResults.begin(), attackResults.end());
+	std::vector<int> defendResults = defenderDice_->getRoll();
+	std::sort(defendResults.begin(), defendResults.end());
+	std::reverse(defendResults.begin(), defendResults.end());
+	// compare every activ attack die with every active defend die
+	for (int i = 0; i < defendResults.size(); i++) {
+		if (attackResults[i] > defendResults[i]) {
+			// defender loses a unit
+			lossArr[1]++;
+		}
+		else {
+			// attacker loses a unit
+			lossArr[0]++;
+		}
+	}
+
+
+	return lossArr;
 }

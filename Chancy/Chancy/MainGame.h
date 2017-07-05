@@ -27,6 +27,7 @@
 #include "StatePhase5.h"
 #include "StatePhase6.h"
 #include "Util.h"
+#include "Dice.h"
 
 class MainGame
 {
@@ -42,20 +43,20 @@ private:
 	void initLevel();
 	void initShaders();
 
-	void drawHud();
 	void checkVictory();
-	Territory* checkDistanceToTerritory(glm::vec2 mousePos);
 
 	void printFPS(int interval);
 
 
 	std::vector<Level*> levels_; /// vector of levels
 	int currentLevel_;
-
 	std::vector<Player*> players_; /// vector of players
 	int currentPlayer_ = 0;
-
 	std::vector<Territory*> territories_; /// vector of territories
+
+	GLuint dieSize = 50;
+	Dice* attackerDice_ = nullptr; /// vector of attacker dice
+	Dice* defenderDice_ = nullptr; /// vector of defender dice
 
 	Bengine::Window window_;
 	Bengine::InputManager inputManager_;
