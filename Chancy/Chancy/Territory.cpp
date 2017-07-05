@@ -51,6 +51,8 @@ void Territory::addUnit(Bengine::AudioEngine* audioEngine) {
 		unitTransformation(audioEngine, 0, 1);
 		unitsT1_[unitsT1_.size() - 1]->getSpawnSoundEffect().play();
 	}
+	// update the unit count
+	updateUnitCount();
 }
 
 
@@ -73,6 +75,8 @@ void Territory::destroyUnit(Bengine::AudioEngine* audioEngine) {
 	else {
 		unitTransformation(audioEngine, 1, 0);
 	}
+	// update the unit count
+	updateUnitCount();
 }
 
 

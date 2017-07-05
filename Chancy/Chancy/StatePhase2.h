@@ -10,6 +10,8 @@ public:
 
 	void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState);
 	void drawGame();
+	void enterState(int playerIndex);
+
 private:
 	// needed for the purchase logic
 	const int maxNumberOfSpaceStations = 5;

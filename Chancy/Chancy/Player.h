@@ -13,6 +13,7 @@ class Continent;
 class Player
 {
 public:
+	Player(std::string name, Bengine::ColorRGBA8 color);
 	Player();
 	~Player();
 

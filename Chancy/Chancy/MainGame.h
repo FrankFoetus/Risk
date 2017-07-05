@@ -54,7 +54,7 @@ private:
 	int currentPlayer_ = 0;
 	std::vector<Territory*> territories_; /// vector of territories
 
-	GLuint dieSize = 50;
+	GLuint dieSize_ = 50;
 	Dice* attackerDice_ = nullptr; /// vector of attacker dice
 	Dice* defenderDice_ = nullptr; /// vector of defender dice
 

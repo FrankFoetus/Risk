@@ -39,11 +39,11 @@ void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2
 }
 
 
-void State::enterState(int currentPlayer) {
+void State::enterState(int playerIndex) {
 
 	if (!enteredState_) {
 		// set the current Player
-		currentPlayer_ = players_[currentPlayer];
+		currentPlayer_ = players_[playerIndex];
 		// dont enter state again before next round
 		enteredState_ = true;
 	}
@@ -97,4 +97,30 @@ Territory* State::checkDistanceToTerritory(glm::vec2 mousePos) {
 		}
 	}
 	return nullptr;
+}
+
+
+
+int State::calculateReinforcements() {
+	// initialize #reinforcements
+	int numberOfReinforcements = 0;
+	// add 1 reinforcement for every owned territory
+	for (auto territory : territories_) {
+		if (territory->getOwner() == currentPlayer_) {
+			numberOfReinforcements++;
+		}
+	}
+	// one troop for every three territories
+	numberOfReinforcements /= 3;
+	// at least 3 troops for territories
+	if (numberOfReinforcements < 3) {
+		numberOfReinforcements = 3;
+	}
+	// add continental boni
+	for (auto continent : continents_) {
+		if (continent->getOwner() == currentPlayer_) {
+			numberOfReinforcements += continent->getBonus();
+		}
+	}
+	return numberOfReinforcements;
 }

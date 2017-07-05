@@ -24,7 +24,7 @@ Dice::Dice() {
 
 
 
-Dice::Dice(int numberOfDice, glm::vec2 upperLeftCornerPos, GLuint dieSize)
+Dice::Dice(int numberOfDice, glm::vec2 upperLeftCornerPos, GLuint dieSize) : dieSize_(dieSize)
 {
 	/* initialize random seed: */
 	srand(time(NULL));
@@ -39,7 +39,7 @@ Dice::Dice(int numberOfDice, glm::vec2 upperLeftCornerPos, GLuint dieSize)
 		// push back the color
 		color_.push_back(Bengine::ColorRGBA8(255, 255, 255, 255));
 		// push back the postion
-		position_.emplace_back(glm::vec4(upperLeftCornerPos.x + (dieSize_ + 10) * i, upperLeftCornerPos.y, dieSize_, dieSize_));
+		position_.emplace_back(glm::vec4(upperLeftCornerPos.x + (dieSize_ + 10) * i, upperLeftCornerPos.y - dieSize_, dieSize_, dieSize_));
 	}
 }
 
@@ -48,10 +48,9 @@ Dice::~Dice() {
 }
 
 
-
 void Dice::roll(int numberOfDice) {
 	currentRoll_.clear();
-	for (int ind = 0; ind < numberOfDice; ind++) {
+	for (int i = 0; i < numberOfDice; i++) {
 		currentRoll_.push_back(rand() % 6 + 1);
 	}
 }
@@ -59,6 +58,6 @@ void Dice::roll(int numberOfDice) {
 
 void Dice::draw(Bengine::SpriteBatch* spriteBatch) {
 	for (int i = 0; i < currentRoll_.size(); i++) {
-		spriteBatch->draw(position_[i], glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), textureIDs_[currentRoll_[i]], 0, color_[i]);
+		spriteBatch->draw(position_[i], glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), textureIDs_[currentRoll_[i] - 1], 0, color_[i]);
 	}
 }

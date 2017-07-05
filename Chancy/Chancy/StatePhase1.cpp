@@ -13,10 +13,10 @@ StatePhase1::~StatePhase1()
 }
 
 
-void StatePhase1::enterState(int currentPlayer) {
+void StatePhase1::enterState(int playerIndex) {
 	if (!enteredState_) {
 		// set the current Player
-		currentPlayer_ = players_[currentPlayer];
+		currentPlayer_ = players_[playerIndex];
 		// light up all territories
 		for (auto terr : territories_) {
 			terr->lightUpTerritory();
@@ -25,6 +25,26 @@ void StatePhase1::enterState(int currentPlayer) {
 		numberOfReinforcements_ = calculateReinforcements();
 		// dont enter state again before next round
 		enteredState_ = true;
+	}
+}
+
+
+void StatePhase1::leaveState(GameState& gameState) {
+	// check if all troops have been placed
+	if (numberOfReinforcements_ == 0) {
+		// go to the next phase
+		gameState = GameState::PHASE2;
+		std::cout << "ENTERING PHASE 2" << std::endl;
+		// update territories
+		for (auto territory : territories_) {
+			territory->updateUnitCount();
+		}
+		// make state enterable again
+		enteredState_ = false;
+	}
+	else {
+		std::cout << "Not all reinforcements have been placed!" << std::endl;
+		// TODO: add sound to indicate remaining troops
 	}
 }
 
@@ -199,56 +219,14 @@ void StatePhase1::drawGame() {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// show whos turn it is
+	drawHud(currentPlayer_->getName() + "'s turn!", glm::vec2(-750, 390), glm::vec2(standardFontSize_), currentPlayer_->getColor(), true);
 	// draw the hud
-	drawHud("Phase 1: Place your reinforcements! ", glm::vec2(-700, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
-	drawHud(std::to_string(numberOfReinforcements_) + " left.", glm::vec2(-700, 260), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud("Phase 1: Place your reinforcements! ", glm::vec2(-750, 360), glm::vec2(standardFontSize_), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud(std::to_string(numberOfReinforcements_) + " left.", glm::vec2(-750, 330), glm::vec2(standardFontSize_), Bengine::ColorRGBA8(255, 255, 255, 255), true);
 	// disable the shader
 	colorProgram_->unuse();
 
 	// setup our buffer and draw everything to the screen
 	window_->swapBuffer();
-}
-
-int StatePhase1::calculateReinforcements() {
-	// initialize #reinforcements
-	int numberOfReinforcements = 0;
-	// add 1 reinforcement for every owned territory
-	for (auto territory : territories_) {
-		if (territory->getOwner() == currentPlayer_) {
-			numberOfReinforcements++;
-		}
-	}
-	// one troop for every three territories
-	numberOfReinforcements /= 3;
-	// at least 3 troops for territories
-	if (numberOfReinforcements < 3) { 
-		numberOfReinforcements = 3; 
-	}
-	// add continental boni
-	for (auto continent : continents_) {
-		if (continent->getOwner() == currentPlayer_) {
-			numberOfReinforcements += continent->getBonus();
-		}
-	}
-	return numberOfReinforcements;
-}
-
-
-void StatePhase1::leaveState(GameState& gameState) {
-	// check if all troops have been placed
-	if (numberOfReinforcements_ == 0) {
-		// go to the next phase
-		gameState = GameState::PHASE2;
-		std::cout << "ENTERING PHASE 2" << std::endl;
-		// update territories
-		for (auto territory : territories_) {
-			territory->updateUnitCount();
-		}
-		// make state enterable again
-		enteredState_ = false;
-	}
-	else {
-		std::cout << "Not all reinforcements have been placed!" << std::endl;
-		// TODO: add sound to indicate remaining troops
-	}
 }

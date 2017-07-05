@@ -29,7 +29,7 @@ public:
 		Bengine::GLSLProgram* colorProgram, Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, 
 		Bengine::Window* window, Dice* attackerDice, Dice* defenderDice, const GLuint windowWidth, const GLuint windowHeight, std::vector<Player*> players);
 
-	virtual void enterState(int currentPlayer);
+	virtual void enterState(int playerIndex);
 	virtual void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) = 0;
 
 protected:
@@ -37,6 +37,11 @@ protected:
 	
 	virtual void leaveState(GameState& gameState);
 	Territory* checkDistanceToTerritory(glm::vec2 mousePos);
+	int calculateReinforcements();
+
+	// font size for the text on screen
+	int standardFontSize_ = 1;
+
 
 	bool leaveOK_ = true;
 	bool enteredState_ = false;

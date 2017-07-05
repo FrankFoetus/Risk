@@ -11,6 +11,18 @@ StatePhase2::~StatePhase2()
 }
 
 
+void StatePhase2::enterState(int playerIndex) {
+
+	if (!enteredState_) {
+		// set the current Player
+		currentPlayer_ = players_[playerIndex];
+		// get the number of reinforcements
+		currentPlayer_->setEnergy(currentPlayer_->getEnergy() + calculateReinforcements());
+		// dont enter state again before next round
+		enteredState_ = true;
+	}
+}
+
 void StatePhase2::processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) {
 
 	SDL_Event evt;
@@ -177,10 +189,11 @@ void StatePhase2::drawGame() {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// show whos turn it is
+	drawHud(currentPlayer_->getName() + "'s turn!", glm::vec2(-750, 390), glm::vec2(standardFontSize_), currentPlayer_->getColor(), true);
 	// draw the hud
-	int numberOfReinforcements = 5;
-	drawHud("Phase 2: Buy commanders and space stations!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
-	drawHud(std::to_string(numberOfReinforcements) + " energy left.", glm::vec2(-750, 260), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud("Phase 2: Buy commanders and space stations!", glm::vec2(-750, 360), glm::vec2(standardFontSize_), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud(std::to_string(currentPlayer_->getEnergy()) + " energy left.", glm::vec2(-750, 330), glm::vec2(standardFontSize_), Bengine::ColorRGBA8(255, 255, 255, 255), true);
 
 	// disable the shader
 	colorProgram_->unuse();

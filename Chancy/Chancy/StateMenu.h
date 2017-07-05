@@ -8,7 +8,7 @@ public:
 	StateMenu();
 	~StateMenu();
 
-	void enterState(int currentPlayer);
+	void enterState(int playerIndex);
 	void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState);
 	void drawGame();
 private:

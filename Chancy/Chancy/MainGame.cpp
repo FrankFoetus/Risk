@@ -65,12 +65,17 @@ void MainGame::initSys() {
 	spriteFont_ = new Bengine::SpriteFont("Fonts/chintzy.ttf", 32);
 
 	// initialize Players
-	players_.push_back(new Player());
+	players_.push_back(new Player("Mc LongSchlong", Bengine::ColorRGBA8(255, 0, 0, 255)));
+	players_[0]->setTrunOrder(1);
+	players_.push_back(new Player("Peter Pickel", Bengine::ColorRGBA8(0, 255, 0, 255)));
+	players_[0]->setTrunOrder(2);
+	players_.push_back(new Player("Shyla Schamhaar", Bengine::ColorRGBA8(0, 0, 255, 255)));
+	players_[0]->setTrunOrder(3);
 	// initialize level
 	initLevel();
 	// initialize 3 attacker dice and 2 defender dice
-	attackerDice_ = new Dice(3, glm::vec2(windowWidth_ - 3 * dieSize - 30, windowHeight_ - 10), dieSize);
-	defenderDice_ = new Dice(2, glm::vec2(windowWidth_ - 2 * dieSize - 15, windowHeight_ - 20 - dieSize), dieSize);
+	attackerDice_ = new Dice(3, glm::vec2(windowWidth_ / 2 - 3 * dieSize_ - 30, windowHeight_ / 2 - 10), dieSize_);
+	defenderDice_ = new Dice(2, glm::vec2(windowWidth_ / 2 - 3 * dieSize_ - 30, windowHeight_ / 2 - 20 - dieSize_), dieSize_);
 	// initialize states
 	stateMenu_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_, 
 						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
@@ -127,6 +132,14 @@ void MainGame::gameLoop() {
 			stateMenu_->enterState(currentPlayer_);
 			stateMenu_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			stateMenu_->drawGame();
+			break;
+		case GameState::PHASE0:
+			
+			if (currentPlayer_ < players_.size() - 1)
+				currentPlayer_++;
+			else
+				currentPlayer_ = 0;
+			gameState_ = GameState::PHASE1;
 			break;
 		case GameState::PHASE1:
 

@@ -12,11 +12,11 @@ StatePhase5::~StatePhase5()
 }
 
 
-void StatePhase5::enterState(int currentPlayer) {
+void StatePhase5::enterState(int playerIndex) {
 	if (!enteredState_) {
 		std::cout << "ENTERING STATE 5" << std::endl;
 		// set the current Player
-		currentPlayer_ = players_[currentPlayer];
+		currentPlayer_ = players_[playerIndex];
 		// light down all territories
 		for (auto terr : territories_) {
 			terr->lightDownTerritory();
@@ -126,6 +126,9 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 			if (attackingUnits_ > 0) {
 				// process invasion
 				diceActivatited_ = true;
+				// roll the dice once
+				attackerDice_->roll(std::min(attackingUnits_, 3));
+				defenderDice_->roll(std::min(defendingUnits_, 2));
 			}
 			else {
 				if (leaveOK_) {
@@ -142,9 +145,9 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 			if (territory != NULL) {
 				// if territory was not lid up, light it and its neighbours up and all other territories down 
 				if (territory->getColor().a < 255) {
-					// make state not exitable
-					leaveOK_ = false;
 					if (territory->getOwner() == currentPlayer_) {
+						// make state not exitable
+						leaveOK_ = false;
 						// CHANGING ATTACKER:
 						// light down all territories
 						for (auto terr : territories_) {
@@ -295,7 +298,7 @@ void StatePhase5::drawGame() {
 
 	territoryBatch_->begin();
 	// if activated draw the dice
-	if (diceActivatited_ > 0) {
+	if (diceActivatited_) {
 		if (waitTime_ < 180) { // wait 3 seconds (with 60 fps)
 			attackerDice_->draw(territoryBatch_);
 			defenderDice_->draw(territoryBatch_);
@@ -306,25 +309,15 @@ void StatePhase5::drawGame() {
 			waitTime_++;
 		}
 		else {
-			waitTime_ = 0;
 			if (attackingUnits_ > 0 && defendingUnits_ > 0) {
 				// ATTACK!
-				// activate the correct number of dice for the attacker
-				for (int i = 0; i < std::max(attackerTerritory_->getUnitCount(), 3); i++) { attackerDice_->setActivation(true, i); }
-				// activate the correct number of dice for the defender
-				for (int i = 0; i < std::max(defenderTerritory_->getUnitCount(), 2); i++) { defenderDice_->setActivation(true, i); }
-				// roll the dice
-				attackerDice_->roll(std::max(attackingUnits_, 3));
-				defenderDice_->roll(std::min(defendingUnits_, 2));
 				// calculate winners
-				int* lossArr = calculateWinners();
-				// destroy lost attacking units
-				for (int ind = 0; ind < lossArr[0]; ind++) {
-					attackerTerritory_->destroyUnit(audioEngine_);
-				}
-				// destroy lost defending units
-				for (int ind = 0; ind < lossArr[1]; ind++) {
-					attackerTerritory_->destroyUnit(audioEngine_);
+				processBattle();
+				if (attackingUnits_ > 0) {
+					waitTime_ = 0;
+					// roll the dice
+					attackerDice_->roll(std::min(attackingUnits_, 3));
+					defenderDice_->roll(std::min(defendingUnits_, 2));
 				}
 			}
 			else {
@@ -338,9 +331,6 @@ void StatePhase5::drawGame() {
 						// substract units from attacking territory
 						attackerTerritory_->destroyUnit(audioEngine_);
 					}
-					// update the unit counts of territories
-					defenderTerritory_->updateUnitCount();
-					attackerTerritory_->updateUnitCount();
 				}
 				// deselect the attacker territory and its neighbours
 				for (auto territory : territories_) {
@@ -366,8 +356,10 @@ void StatePhase5::drawGame() {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// show whos turn it is
+	drawHud(currentPlayer_->getName() + "'s turn!", glm::vec2(-750, 390), glm::vec2(standardFontSize_), currentPlayer_->getColor(), true);
 	// draw the head line
-	drawHud("Phase 5: Invade territories!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud("Phase 5: Invade territories!", glm::vec2(-750, 360), glm::vec2(standardFontSize_), Bengine::ColorRGBA8(255, 255, 255, 255), true);
 	if (attackerTerritory_ != nullptr && defenderTerritory_ != nullptr) {
 		// draw the number of attacking units if attacker and defender are chosen
 		drawHud(("Attackers: " + std::to_string(attackingUnits_)),
@@ -406,9 +398,7 @@ std::vector<Territory*> StatePhase5::getNeighbours(Territory* territory) {
 }
 
 
-int* StatePhase5::calculateWinners() {
-	// position 0 in lossArr is attacker losses, position 1 is defender losses
-	int lossArr[2] = { 0,0 };
+void StatePhase5::processBattle() {
 	// sort the roll results
 	std::vector<int> attackResults = attackerDice_->getRoll();
 	std::sort(attackResults.begin(), attackResults.end());
@@ -417,17 +407,16 @@ int* StatePhase5::calculateWinners() {
 	std::sort(defendResults.begin(), defendResults.end());
 	std::reverse(defendResults.begin(), defendResults.end());
 	// compare every activ attack die with every active defend die
-	for (int i = 0; i < defendResults.size(); i++) {
+	for (int i = 0; i < std::min(attackResults.size(), defendResults.size()); i++) {
 		if (attackResults[i] > defendResults[i]) {
-			// defender loses a unit
-			lossArr[1]++;
+			// destroy lost defending units
+			defenderTerritory_->destroyUnit(audioEngine_);
+			defendingUnits_--;
 		}
 		else {
-			// attacker loses a unit
-			lossArr[0]++;
+			// destroy lost attacking units
+			attackerTerritory_->destroyUnit(audioEngine_);
+			attackingUnits_--;
 		}
 	}
-
-
-	return lossArr;
 }

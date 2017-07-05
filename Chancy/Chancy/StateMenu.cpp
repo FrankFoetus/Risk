@@ -12,9 +12,9 @@ StateMenu::~StateMenu()
 }
 
 
-void StateMenu::enterState(int currentPlayer) {
+void StateMenu::enterState(int playerIndex) {
 	// set the current Player
-	currentPlayer_ = players_[currentPlayer];
+	currentPlayer_ = players_[playerIndex];
 	// light down all territories
 	for (auto terr : territories_) {
 		terr->lightDownTerritory();
@@ -102,6 +102,7 @@ void StateMenu::drawGame() {
 	// upload matrix to the gpu
 	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 
+	/*
 	// draw the territories
 	territoryBatch_->begin();
 	for (auto it : territories_) {
@@ -111,6 +112,7 @@ void StateMenu::drawGame() {
 	territoryBatch_->end();
 	// render the territories
 	territoryBatch_->renderBatch();
+	*/
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 

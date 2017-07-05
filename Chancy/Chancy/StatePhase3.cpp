@@ -145,9 +145,10 @@ void StatePhase3::drawGame() {
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	// show whos turn it is
+	drawHud(currentPlayer_->getName() + "'s turn!", glm::vec2(-750, 390), glm::vec2(standardFontSize_), currentPlayer_->getColor(), true);
 	// draw the hud
-	int numberOfReinforcements = 5;
-	drawHud("Phase 3: Buy cards!", glm::vec2(-750, 360), glm::vec2(2), Bengine::ColorRGBA8(255, 255, 255, 255), true);
+	drawHud("Phase 3: Buy cards!", glm::vec2(-750, 360), glm::vec2(standardFontSize_), Bengine::ColorRGBA8(255, 255, 255, 255), true);
 
 	// disable the shader
 	colorProgram_->unuse();

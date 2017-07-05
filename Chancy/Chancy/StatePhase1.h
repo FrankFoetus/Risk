@@ -8,14 +8,12 @@ public:
 	StatePhase1();
 	~StatePhase1();
 
-	virtual void enterState(int currentPlayer);
+	virtual void enterState(int playerIndex);
 	void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState);
 	void drawGame();
 
 private:
 	virtual void leaveState(GameState& gameState);
-
-	int calculateReinforcements();
 
 	int numberOfReinforcements_ = 0;
 };

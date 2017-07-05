@@ -10,5 +10,8 @@ public:
 
 	void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState);
 	void drawGame();
+
+private:
+	virtual void leaveState(GameState& gameState);
 };
 
