@@ -19,7 +19,7 @@ void StatePhase5::enterState(int playerIndex) {
 		currentPlayer_ = players_[playerIndex];
 		// light down all territories
 		for (auto terr : territories_) {
-			terr->lightDownTerritory();
+			terr->lightDownTerritory(true);
 		}
 		// dont enter state again before next round
 		enteredState_ = true;
@@ -129,6 +129,8 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 				// roll the dice once
 				attackerDice_->roll(std::min(attackingUnits_, 3));
 				defenderDice_->roll(std::min(defendingUnits_, 2));
+				// reset wait time
+				waitTime_ = 0;
 			}
 			else {
 				if (leaveOK_) {
@@ -151,7 +153,7 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 						// CHANGING ATTACKER:
 						// light down all territories
 						for (auto terr : territories_) {
-							terr->lightDownTerritory();
+							terr->lightDownTerritory(true);
 						}
 						if (attackerTerritory_ != nullptr) {
 							// reset color of attacker territory
@@ -169,11 +171,11 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 						}
 
 						// light up attacker territory and its neighbours
-						attackerTerritory_->lightUpTerritory();
+						attackerTerritory_->lightUpTerritory(true);
 						for (auto terr : getNeighbours(attackerTerritory_)) {
 							// only light up territories of other players that can be attacked
 							if (terr->getOwner() != currentPlayer_) {
-								terr->lightUpTerritory();
+								terr->lightUpTerritory(true);
 							}
 						}
 					}
@@ -186,7 +188,7 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 					if (territory == attackerTerritory_) {
 						// deselect the territory and its neighbours
 						for (auto territory : territories_) {
-							territory->lightDownTerritory();
+							territory->lightDownTerritory(true);
 						}
 						// reset color of attacker and defender territories
 						attackerTerritory_->resetColor();
@@ -204,7 +206,7 @@ void StatePhase5::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 						if (defenderTerritory_ != nullptr) {
 							// reset the color of the defender territorie
 							defenderTerritory_->resetColor();
-							defenderTerritory_->lightUpTerritory();
+							defenderTerritory_->lightUpTerritory(true);
 						}
 						// choose number of units to attack
 						defenderTerritory_ = territory;
@@ -334,7 +336,7 @@ void StatePhase5::drawGame() {
 				}
 				// deselect the attacker territory and its neighbours
 				for (auto territory : territories_) {
-					territory->lightDownTerritory();
+					territory->lightDownTerritory(true);
 				}
 				// reset color of attacker and defender territories
 				attackerTerritory_->resetColor();
@@ -380,21 +382,6 @@ void StatePhase5::drawGame() {
 
 	// setup our buffer and draw everything to the screen
 	window_->swapBuffer();
-}
-
-
-std::vector<Territory*> StatePhase5::getNeighbours(Territory* territory) {
-	std::vector<Territory*> neighbours;
-	for (auto terr : territories_) {
-		// calculate the distance between the two territories
-		float distance = std::sqrt((terr->getPosition().x - territory->getPosition().x) * (terr->getPosition().x - territory->getPosition().x) +
-						(terr->getPosition().y - territory->getPosition().y) * (terr->getPosition().y - territory->getPosition().y));
-		// if the distance is small enough, add the terr to neighbours
-		if (distance < 1.5*territory->getPosition().w) {
-			neighbours.push_back(terr);
-		}
-	}
-	return neighbours;
 }
 
 

@@ -17,7 +17,7 @@ void StateMenu::enterState(int playerIndex) {
 	currentPlayer_ = players_[playerIndex];
 	// light down all territories
 	for (auto terr : territories_) {
-		terr->lightDownTerritory();
+		terr->lightDownTerritory(true);
 	}
 }
 

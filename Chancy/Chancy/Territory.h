@@ -21,35 +21,37 @@ public:
 	Territory(std::string name, glm::vec4 position, glm::vec4 uv, GLuint textureID, Bengine::ColorRGBA8 color);
 	~Territory();
 
+	// getters
 	std::string getName() { return name_; }
 	glm::vec4 getPosition() { return position_; }
 	glm::vec4 getUV() { return uv_; }
 	Bengine::ColorRGBA8 getColor() { return color_; }
 	GLuint getTextureID() { return textureID_; }
-
 	Player* getOwner() { return owner_; }
 	Continent* getContinent() { return continent_; }
 	std::vector<Unit*> getUnitsT1() { return unitsT1_; }
 	std::vector<Unit*> getUnitsT2() { return unitsT2_; }
 	std::vector<Unit*> getUnitsT3() { return unitsT3_; }
 	int getUnitCount() { return unitCount_; }
+	int getMovedUnitsCount() { return movedUnits_; }
 
+	// setters
 	void setPosition(glm::vec4 position) { position_ = position; }
 	void setUV(glm::vec4 uv) { uv_ = uv; }
 	void setColor(Bengine::ColorRGBA8 color) { color_ = color; }
 	void setTextureID(GLuint textureID) { textureID_ = textureID; }
-
 	void setOwner(Player* player) { owner_ = player; }
 	void setContinent(Continent* continent) { continent_ = continent; }
 	void setUnitsT1(std::vector<Unit*> unitsT1) { unitsT1_ = unitsT1; }
 	void setUnitsT2(std::vector<Unit*> unitsT2) { unitsT2_ = unitsT2; }
 	void setUnitsT3(std::vector<Unit*> unitsT3) { unitsT3_ = unitsT3; }
-	void updateUnitCount() { unitCount_ = unitsT1_.size() + unitsT2_.size() * 5 + unitsT3_.size() * 25; }
+	void setMovedUnitsCount(int movedUnits) { movedUnits_ = movedUnits; }
 
+	void updateUnitCount() { unitCount_ = unitsT1_.size() + unitsT2_.size() * 5 + unitsT3_.size() * 25; }
 	void addUnit(Bengine::AudioEngine* audioEngine);
 	void destroyUnit(Bengine::AudioEngine* audioEngine);
-	void lightUpTerritory();
-	void lightDownTerritory();
+	void lightUpTerritory(bool withUnits);
+	void lightDownTerritory(bool withUnits);
 
 	void resetColor() { color_ = origColor_; }
 
@@ -75,5 +77,6 @@ private:
 	std::vector<Unit*> unitsT2_;
 	std::vector<Unit*> unitsT3_;
 	int unitCount_ = 0;
+	int movedUnits_ = 0;
 };
 

@@ -15,7 +15,6 @@ public:
 
 private:
 	virtual void leaveState(GameState& gameState);
-	std::vector<Territory*> getNeighbours(Territory* territory);
 	void processBattle();
 
 	Territory* attackerTerritory_ = nullptr;

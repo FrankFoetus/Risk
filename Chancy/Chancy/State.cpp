@@ -124,3 +124,18 @@ int State::calculateReinforcements() {
 	}
 	return numberOfReinforcements;
 }
+
+
+std::vector<Territory*> State::getNeighbours(Territory* territory) {
+	std::vector<Territory*> neighbours;
+	for (auto terr : territories_) {
+		// calculate the distance between the two territories
+		float distance = std::sqrt((terr->getPosition().x - territory->getPosition().x) * (terr->getPosition().x - territory->getPosition().x) +
+			(terr->getPosition().y - territory->getPosition().y) * (terr->getPosition().y - territory->getPosition().y));
+		// if the distance is small enough, add the terr to neighbours
+		if (distance < 1.5*territory->getPosition().w) {
+			neighbours.push_back(terr);
+		}
+	}
+	return neighbours;
+}

@@ -38,6 +38,7 @@ protected:
 	virtual void leaveState(GameState& gameState);
 	Territory* checkDistanceToTerritory(glm::vec2 mousePos);
 	int calculateReinforcements();
+	std::vector<Territory*> getNeighbours(Territory* territory);
 
 	// font size for the text on screen
 	int standardFontSize_ = 1;
@@ -48,7 +49,7 @@ protected:
 	bool diceActivatited_ = false;
 	float windowWidth_ = 0;
 	float windowHeight_ = 0;
-	int waitTime_;
+	int waitTime_ = 0;
 	Bengine::SpriteFont* spriteFont_ = nullptr;
 	Bengine::InputManager* inputManager_ = nullptr;
 	Bengine::AudioEngine* audioEngine_ = nullptr;

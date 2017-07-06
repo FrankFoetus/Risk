@@ -133,51 +133,57 @@ void MainGame::gameLoop() {
 			stateMenu_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			stateMenu_->drawGame();
 			break;
+		case GameState::PREPHASE:
+			// choosing territories
+			// TODO: set up the turn order by bidding energy
+			// TODO: initial choosing of the territories
+			break;
 		case GameState::PHASE0:
-			
+			// changing player according to turn order
 			if (currentPlayer_ < players_.size() - 1)
 				currentPlayer_++;
 			else
 				currentPlayer_ = 0;
 			gameState_ = GameState::PHASE1;
+			std::cout << "Entering Phase 1" << std::endl;
 			break;
 		case GameState::PHASE1:
-
+			// placing reinforcements
 			inputManager_.update();
 			statePhase1_->enterState(currentPlayer_);
 			statePhase1_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase1_->drawGame();
 			break;
 		case GameState::PHASE2:
-
+			// buying commanders and space stations
 			inputManager_.update();
 			statePhase2_->enterState(currentPlayer_);
 			statePhase2_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase2_->drawGame();
 			break;
 		case GameState::PHASE3:
-
+			// buying commander cards
 			inputManager_.update();
 			statePhase3_->enterState(currentPlayer_);
 			statePhase3_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase3_->drawGame();
 			break;
 		case GameState::PHASE4:
-
+			// playing commander cards
 			inputManager_.update();
 			statePhase4_->enterState(currentPlayer_);
 			statePhase4_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase4_->drawGame();
 			break;
 		case GameState::PHASE5:
-
+			// invade territories
 			inputManager_.update();
 			statePhase5_->enterState(currentPlayer_);
 			statePhase5_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);
 			statePhase5_->drawGame();
 			break;
 		case GameState::PHASE6:
-
+			// move troops
 			inputManager_.update();
 			statePhase6_->enterState(currentPlayer_);
 			statePhase6_->processInput(&cameraSpeed_, &scaleSpeed_, *&gameState_);

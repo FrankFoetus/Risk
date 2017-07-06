@@ -124,7 +124,7 @@ void StatePhase2::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 				if (territory->getColor().a < 255) {
 					// check if the maximum number of territories a space station can be placed is already reached
 					if (numberOfTerritoriesChosen_ <= maxNumberOfSpaceStations) {
-						territory->lightUpTerritory();
+						territory->lightUpTerritory(true);
 						numberOfTerritoriesChosen_++;
 					}
 					else {
@@ -132,7 +132,7 @@ void StatePhase2::processInput(float* cameraSpeed, float* scaleSpeed, GameState&
 					}
 				}
 				else {
-					territory->lightDownTerritory();
+					territory->lightDownTerritory(true);
 					numberOfTerritoriesChosen_--;
 				}
 			}

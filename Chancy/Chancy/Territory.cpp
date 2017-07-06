@@ -83,20 +83,22 @@ void Territory::destroyUnit(Bengine::AudioEngine* audioEngine) {
 /**
 light up all units and the sprite of territory
 */
-void Territory::lightUpTerritory() {
+void Territory::lightUpTerritory(bool withUnits) {
 	// light up the territory sprite
 	setColor(Bengine::ColorRGBA8(color_.r, color_.g, color_.b, 255));
-	// light up the sprites of units of type 1
-	for (auto it : unitsT1_) {
-		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
-	}
-	// light up the sprites of units of type 2
-	for (auto it : unitsT2_) {
-		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
-	}
-	// light up the sprites of units of type 3
-	for (auto it : unitsT3_) {
-		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+	if (withUnits) {
+		// light up the sprites of units of type 1
+		for (auto it : unitsT1_) {
+			it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+		}
+		// light up the sprites of units of type 2
+		for (auto it : unitsT2_) {
+			it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+		}
+		// light up the sprites of units of type 3
+		for (auto it : unitsT3_) {
+			it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 255));
+		}
 	}
 }
 
@@ -104,20 +106,22 @@ void Territory::lightUpTerritory() {
 /**
 light down all units and the sprite of territory
 */
-void Territory::lightDownTerritory() {
+void Territory::lightDownTerritory(bool withUnits) {
 	// dim the territory sprite
 	setColor(Bengine::ColorRGBA8(color_.r, color_.g, color_.b, 150));
-	// dim the sprites of units of type 1
-	for (auto it : unitsT1_) {
-		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
-	}
-	// dim the sprites of units of type 2
-	for (auto it : unitsT2_) {
-		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
-	}
-	// dim the sprites of units of type 3
-	for (auto it : unitsT3_) {
-		it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+	if (withUnits) {
+		// dim the sprites of units of type 1
+		for (auto it : unitsT1_) {
+			it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+		}
+		// dim the sprites of units of type 2
+		for (auto it : unitsT2_) {
+			it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+		}
+		// dim the sprites of units of type 3
+		for (auto it : unitsT3_) {
+			it->setColor(Bengine::ColorRGBA8(it->getColor().r, it->getColor().g, it->getColor().b, 150));
+		}
 	}
 }
 

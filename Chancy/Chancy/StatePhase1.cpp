@@ -19,7 +19,7 @@ void StatePhase1::enterState(int playerIndex) {
 		currentPlayer_ = players_[playerIndex];
 		// light up all territories
 		for (auto terr : territories_) {
-			terr->lightUpTerritory();
+			terr->lightUpTerritory(true);
 		}
 		// get the number of reinforcements
 		numberOfReinforcements_ = calculateReinforcements();
@@ -33,8 +33,8 @@ void StatePhase1::leaveState(GameState& gameState) {
 	// check if all troops have been placed
 	if (numberOfReinforcements_ == 0) {
 		// go to the next phase
-		gameState = GameState::PHASE2;
-		std::cout << "ENTERING PHASE 2" << std::endl;
+		gameState = GameState::PHASE5;
+		std::cout << "ENTERING PHASE 5" << std::endl;
 		// update territories
 		for (auto territory : territories_) {
 			territory->updateUnitCount();
