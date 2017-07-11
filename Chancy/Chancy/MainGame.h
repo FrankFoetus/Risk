@@ -28,6 +28,7 @@
 #include "StatePhase6.h"
 #include "Util.h"
 #include "Dice.h"
+#include "Multiplayer.h"
 
 class MainGame
 {
@@ -82,6 +83,8 @@ private:
 	float maxFPS_ = 60.f;
 
 	GameState gameState_ = GameState::MENU;
+
+	Multiplayer multiplayer_ = Multiplayer("127.0.0.1", 54000);
 
 	StateMenu* stateMenu_ = new StateMenu();
 	StatePhase1* statePhase1_ = new StatePhase1();

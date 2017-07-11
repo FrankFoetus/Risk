@@ -13,7 +13,7 @@ State::~State()
 
 void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2D, Bengine::Camera2D* hudCamera2D, Bengine::AudioEngine* audioEngine, Level* level, 
 	Bengine::GLSLProgram* colorProgram, Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, 
-	Bengine::Window* window, Dice* attackerDice, Dice* defenderDice, const GLuint windowWidth, const GLuint windowHeight, std::vector<Player*> players) {
+	Bengine::Window* window, Dice* attackerDice, Dice* defenderDice, const GLuint windowWidth, const GLuint windowHeight, std::vector<Player*> players, std::vector<Continent*> continents) {
 	inputManager_ = inputManager;
 	camera2D_ = camera2D;
 	hudCamera2D_ = hudCamera2D;
@@ -27,6 +27,7 @@ void State::init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2
 	territoryBatch_ = territoryBatch;
 	hudSpritebatch_ = hudSpriteBatch;
 	players_ = players;
+	continents_ = continents;
 	attackerDice_ = attackerDice;
 	defenderDice_ = defenderDice;
 

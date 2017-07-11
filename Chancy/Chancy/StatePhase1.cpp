@@ -17,9 +17,14 @@ void StatePhase1::enterState(int playerIndex) {
 	if (!enteredState_) {
 		// set the current Player
 		currentPlayer_ = players_[playerIndex];
-		// light up all territories
+		// light up all territories of current player, light down all others
 		for (auto terr : territories_) {
-			terr->lightUpTerritory(true);
+			if (terr->getOwner() == currentPlayer_) {
+				terr->lightUpTerritory(true);
+			}
+			else {
+				terr->lightDownTerritory(true);
+			}
 		}
 		// get the number of reinforcements
 		numberOfReinforcements_ = calculateReinforcements();

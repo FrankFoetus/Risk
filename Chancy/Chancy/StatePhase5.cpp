@@ -325,8 +325,17 @@ void StatePhase5::drawGame() {
 			else {
 				if (attackingUnits_ > 0) {
 					// move into defending territory
+					Player* defender = defenderTerritory_->getOwner();
 					// set new owner
 					defenderTerritory_->setOwner(currentPlayer_);
+					// check if continent has been claimed by attacker
+					if (defenderTerritory_->getContinent()->checkCompletion(currentPlayer_, territories_)) {
+						defenderTerritory_->getContinent()->setOwner(currentPlayer_);
+					}
+					// check if continent has been lost by defender
+					else if (defenderTerritory_->getContinent()->checkCompletion(defender, territories_)) {
+						defenderTerritory_->getContinent()->setOwner(nullptr);
+					}
 					for (int i = 0; i < attackingUnits_--;) {
 						// add units to invaded territory
 						defenderTerritory_->addUnit(audioEngine_);

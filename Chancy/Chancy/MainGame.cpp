@@ -78,19 +78,26 @@ void MainGame::initSys() {
 	defenderDice_ = new Dice(2, glm::vec2(windowWidth_ / 2 - 3 * dieSize_ - 30, windowHeight_ / 2 - 20 - dieSize_), dieSize_);
 	// initialize states
 	stateMenu_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_, 
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, 
+						windowWidth_, windowHeight_, players_, levels_[currentLevel_]->getContinents());
 	statePhase1_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, 
+						windowWidth_, windowHeight_, players_, levels_[currentLevel_]->getContinents());
 	statePhase2_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, 
+						windowWidth_, windowHeight_, players_, levels_[currentLevel_]->getContinents());
 	statePhase3_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, 
+						windowWidth_, windowHeight_, players_, levels_[currentLevel_]->getContinents());
 	statePhase4_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, 
+						windowWidth_, windowHeight_, players_, levels_[currentLevel_]->getContinents());
 	statePhase5_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, 
+						windowWidth_, windowHeight_, players_, levels_[currentLevel_]->getContinents());
 	statePhase6_->init(&inputManager_, &camera2D_, &hudCamera2D_, &audioEngine_, levels_[currentLevel_], &colorProgram_,
-						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, windowWidth_, windowHeight_, players_);
+						spriteFont_, &territoryBatch_, &hudSpritebatch_, &window_, attackerDice_, defenderDice_, 
+						windowWidth_, windowHeight_, players_, levels_[currentLevel_]->getContinents());
 }
 
 
@@ -190,6 +197,7 @@ void MainGame::gameLoop() {
 			statePhase6_->drawGame();
 			break;
 		}
+		multiplayer_.sendData("Frame passed");
 
 		fps_ = fpsLimiter_.end();
 		//printFPS(100);

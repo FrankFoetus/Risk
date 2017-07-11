@@ -21,7 +21,7 @@ public:
 	// getters
 	int getWidth() const { return levelData_[0].size(); }
 	int getHeight() const { return levelData_.size(); }
-
+	std::vector<Continent*> getContinents() { return continents_; }
 	std::vector<Territory*>& getTerritories() { return territories_; }
 	const std::vector<std::string>& getLevelData() { return levelData_; }
 

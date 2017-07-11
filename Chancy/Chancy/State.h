@@ -25,9 +25,9 @@ public:
 	State();
 	~State();
 
-	void init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2D, Bengine::Camera2D* hudCamera, Bengine::AudioEngine* audioEngine, Level* level, 
-		Bengine::GLSLProgram* colorProgram, Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch, 
-		Bengine::Window* window, Dice* attackerDice, Dice* defenderDice, const GLuint windowWidth, const GLuint windowHeight, std::vector<Player*> players);
+	void init(Bengine::InputManager* inputManager, Bengine::Camera2D* camera2D, Bengine::Camera2D* hudCamera, Bengine::AudioEngine* audioEngine, Level* level,
+		Bengine::GLSLProgram* colorProgram, Bengine::SpriteFont* spriteFont, Bengine::SpriteBatch* territoryBatch, Bengine::SpriteBatch* hudSpriteBatch,
+		Bengine::Window* window, Dice* attackerDice, Dice* defenderDice, const GLuint windowWidth, const GLuint windowHeight, std::vector<Player*> players, std::vector<Continent*> continents);
 
 	virtual void enterState(int playerIndex);
 	virtual void processInput(float* cameraSpeed, float* scaleSpeed, GameState& gameState) = 0;
